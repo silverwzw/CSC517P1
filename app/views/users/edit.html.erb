@@ -1,5 +1,8 @@
 <h1>Editing user</h1>
-
+<script src="/jquery.js"></script>
+<script>
+    jQuery(document).ready(function () {jQuery("input#user_password")[0].type="password";});
+</script>
 <%= render 'form' %>
 
 <%= link_to 'Show', @user %> |

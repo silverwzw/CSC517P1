@@ -52,11 +52,27 @@ class UsersController < ApplicationController
   # GET /users/1/edit
   def edit
     @user = User.find(params[:id])
+    if !(is_admin? or is_user?(@user.name))
+      respond_to do |format|
+        format.html {redirect_to "/msg.html?you_do_not_have_required_permission"}
+        format.json
+      end
+      return
+    end
   end
 
   # POST /users
   # POST /users.json
   def create
+    @username = params[:user][:name];
+    if (@username == "logout" || @username == "login" || User.where("name = ?", @username).count > 0)
+      session.clear
+      respond_to do |format|
+        format.html {redirect_to "/msg.html?This_username_is_not_available"}
+        format.json
+      end
+      return
+    end
     @user = User.new(params[:user])
 
     respond_to do |format|
@@ -75,6 +91,13 @@ class UsersController < ApplicationController
   # PUT /users/1.json
   def update
     @user = User.find(params[:id])
+    if !(is_admin? or is_user?(@user.name))
+      respond_to do |format|
+        format.html {redirect_to "/msg.html?you_do_not_have_required_permission"}
+        format.json
+      end
+      return
+    end
 
     respond_to do |format|
       if @user.update_attributes(params[:user])
@@ -91,7 +114,17 @@ class UsersController < ApplicationController
   # DELETE /users/1.json
   def destroy
     @user = User.find(params[:id])
+    if !(is_admin? or is_user?(@user.name))
+      respond_to do |format|
+        format.html {redirect_to "/msg.html?you_do_not_have_required_permission"}
+        format.json
+      end
+      return
+    end
     @user.destroy
+    if (!is_admin?)
+      session.clear
+    end
 
     respond_to do |format|
       format.html { redirect_to users_url }
