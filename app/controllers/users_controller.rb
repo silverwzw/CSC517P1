@@ -114,7 +114,8 @@ class UsersController < ApplicationController
   # DELETE /users/1.json
   def destroy
     @user = User.find(params[:id])
-    if !(is_admin? or is_user?(@user.name))
+    @is_ad = is_admin?
+    if !(@is_ad or is_user?(@user.name))
       respond_to do |format|
         format.html {redirect_to "/msg.html?you_do_not_have_required_permission"}
         format.json
@@ -122,12 +123,12 @@ class UsersController < ApplicationController
       return
     end
     @user.destroy
-    if (!is_admin?)
+    if (!@is_ad)
       session.clear
     end
 
     respond_to do |format|
-      format.html { redirect_to users_url }
+      format.html { redirect_to "/users" }
       format.json { head :no_content }
     end
   end
