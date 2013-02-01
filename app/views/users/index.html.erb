@@ -1,5 +1,14 @@
-<h1>Listing users</h1>
-
+<% if @username == "" %>
+    <h2>Please Login:</h2><br />
+    <form action="/users/login" method="POST">
+      User name: <input type="text" name="user[name]" value=""/>
+      Password: <input type="password" name="user[password]" value=""/>
+      <input type="submit" name="submit" value="Login"/>
+    </form>
+    <br /> <h2>or</h2> <br />
+    <%= link_to 'Register Now!', new_user_path %>
+<% else %>
+    <h1>Listing users</h1>
 <table>
   <tr>
     <th>Name</th>
@@ -10,6 +19,7 @@
   </tr>
 
 <% @users.each do |user| %>
+    <% if @username =="admin" or @username == user.name%>
   <tr>
     <td><%= user.name %></td>
     <td><%= user.password %></td>
@@ -17,9 +27,9 @@
     <td><%= link_to 'Edit', edit_user_path(user) %></td>
     <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
   </tr>
+    <% end %>
 <% end %>
 </table>
-
+<a href="/users/login?user[name]=logout">Log out</a>
 <br />
-
-<%= link_to 'New User', new_user_path %>
+<% end %>

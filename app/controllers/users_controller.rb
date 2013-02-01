@@ -3,7 +3,11 @@ class UsersController < ApplicationController
   # GET /users.json
   def index
     @users = User.all
-
+    if is_login?
+      @username = User.find(session[:user_id]).name;
+    else
+      @username = ""
+    end
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @users }
@@ -13,16 +17,15 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
-    if session[:user_id].nil? or session[:user_id] < 0
+    if !(is_login?)
       respond_to do |format|
         format.html {redirect_to "/msg.html?please_log_in_first"}
         format.json
       end
       return
     end
-    @currentUser = User.find(session[:user_id]);
     @user = User.find(params[:id])
-    if @currentUser.name != "admin" and @currentUser.name != @user.name
+    if !(is_admin? or is_user?(@user.name))
       respond_to do |format|
         format.html {redirect_to "/msg.html?you_do_not_have_required_permission"}
         format.json
@@ -99,7 +102,23 @@ class UsersController < ApplicationController
   # POST /users/login
   # POST /users/login.json
   def login
-    @user = User.where("name = ?", params[:user][:name]).first!
+    if(params[:user][:name] == "logout")
+      session[:user_id] = -1
+      respond_to do |format|
+        format.html {redirect_to "/msg?bye!"}
+        format.json
+      end
+      return
+    end
+    @user = User.where("name = ?", params[:user][:name])
+    if (@user.count < 1)
+      respond_to do |format|
+        format.html {redirect_to "/msg?no_such_user"}
+        format.json
+      end
+      return
+    end
+    @user = @user.first!
     if @user.password == params[:user][:password]
       session[:user_id] = @user.id
       respond_to do |format|
@@ -114,4 +133,27 @@ class UsersController < ApplicationController
       end
     end
   end
+
+  def is_login?
+    if session[:user_id].nil?
+      session[:user_id] = -1
+    end
+    return (session[:user_id] >= 0)
+  end
+
+  def is_user?(username)
+    if !(is_login?)
+      return false
+    end
+    return (User.find(session[:user_id]).name == username)
+  end
+
+  def is_admin?
+    return is_user?("admin")
+  end
+
+
+  private :is_login?
+  private :is_admin?
+  private :is_user?
 end

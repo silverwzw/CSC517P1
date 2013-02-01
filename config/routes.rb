@@ -1,6 +1,5 @@
 Project1::Application.routes.draw do
   match 'users/login' => 'users#login'
-  match 'users/is_login' => 'users#is_login'
 
   resources :posts
 
