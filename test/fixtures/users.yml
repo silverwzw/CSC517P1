@@ -1,9 +1,17 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
 one:
-  name: MyString
-  password: MyString
+  name: u1
+  password: u1p
 
 two:
-  name: MyString
-  password: MyString
+  name: u2
+  password: u2p
+
+three:
+  name: u3
+  password: u3p
+
+four:
+  name: admin
+  password: admin

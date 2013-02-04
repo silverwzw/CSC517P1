@@ -6,7 +6,7 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @posts }
+#     format.json { render json: @posts }
     end
   end
 
@@ -28,7 +28,7 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.json { render json: @post }
+#     format.json { render json: @post }
     end
   end
 
@@ -45,10 +45,10 @@ class PostsController < ApplicationController
     respond_to do |format|
       if @post.save
         format.html { redirect_to @post, notice: 'Post was successfully created.' }
-        format.json { render json: @post, status: :created, location: @post }
+#       format.json { render json: @post, status: :created, location: @post }
       else
         format.html { render action: "new" }
-        format.json { render json: @post.errors, status: :unprocessable_entity }
+#       format.json { render json: @post.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -61,10 +61,10 @@ class PostsController < ApplicationController
     respond_to do |format|
       if @post.update_attributes(params[:post])
         format.html { redirect_to @post, notice: 'Post was successfully updated.' }
-        format.json { head :no_content }
+#       format.json { head :no_content }
       else
         format.html { render action: "edit" }
-        format.json { render json: @post.errors, status: :unprocessable_entity }
+#       format.json { render json: @post.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -77,11 +77,19 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to posts_url }
-      format.json { head :no_content }
+#     format.json { head :no_content }
     end
   end
 
   def api_query
 
   end
+
+  def api_list
+    @posts = Post.where("Post_id == 0")
+    respond_to do |format|
+      format.html
+    end
+  end
+
 end

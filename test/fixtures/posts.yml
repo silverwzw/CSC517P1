@@ -1,7 +1,19 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
 one:
-  content: MyString
+  title: p1
+  content: p1c
+  User_id: 3
+  Post_id: 0
 
 two:
-  content: MyString
+  title: p2
+  content: p2c
+  User_id: 1
+  Post_id: 0
+
+ three:
+  title: p3
+  content: p3c
+  User_id: 1
+  Post_id: 2
