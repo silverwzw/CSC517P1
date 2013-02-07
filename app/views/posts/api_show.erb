@@ -1,0 +1,12 @@
+{
+"t":"<%=@post.title%>",
+"c":"<%=@post.content%>",
+"v":<%=@post.votes_json%>,
+"u":{"id":<%=@post.user.id%>,"name":<%=@post.user.name%>},
+"comments":
+    [
+    <% @post.posts.find_each do |pst| %>
+        {"u":{"id":<%pst.user.id%>,"name":"<%=pst.user.name%>"},"c":"<%=pst.content%>","v":<%=pst.votes_json%>,"r":<%=pst.posts.count%>},
+    <% end %>
+    ]
+}

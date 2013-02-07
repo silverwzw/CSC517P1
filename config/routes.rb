@@ -1,6 +1,7 @@
 Project1::Application.routes.draw do
   match 'users/login' => 'users#login'
   match 'posts/api_list' => 'posts#api_list'
+  match 'posts/api_show' => 'posts#api_show'
   match 'db_init' => 'application#db_reset'
 
   resources :posts

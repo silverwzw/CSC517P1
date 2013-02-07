@@ -12,7 +12,7 @@ class PostsController < ApplicationController
 
   # GET /posts/1
   # GET /posts/1.json
-  def show
+  def api_show
     @post = Post.find(params[:id])
 
     respond_to do |format|
@@ -86,7 +86,7 @@ class PostsController < ApplicationController
   end
 
   def api_list
-    @posts = Post.where("Post_id == 0")
+    @posts = Post.where("Post_id IS NULL")
     respond_to do |format|
       format.html
     end

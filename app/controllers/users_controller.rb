@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   def index
     @users = User.all
     if is_login?
-      @username = User.find(session[:user_id]).name;
+      @username = User.find(session[:user_id]).name
     else
       @username = ""
     end
@@ -186,6 +186,26 @@ class UsersController < ApplicationController
     return is_user?("admin")
   end
 
+  def api_list
+    @users = User.all
+    respond_to do |format|
+      format.html
+    end
+  end
+
+  def api_is_admin
+    @is_ad = is_admin? ? "null" : "\"admin\""
+    respond_to do |format|
+      format.html
+    end
+  end
+
+  def api_is_login
+    @is_in = is_login? ? "null" : "{\"id\":" + session[:user_id].to_s + ",\"name\":\"" + User.find(session[:user_id]).name + "\"}"
+    respond_to do |format|
+      format.html
+    end
+  end
 
   private :is_login?
   private :is_admin?

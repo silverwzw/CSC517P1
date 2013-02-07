@@ -1,0 +1,5 @@
+[
+<% @posts.find_each do |post| %>
+    {"u":"<%=post.user.name%>","t":"<%=post.title%>","v":<%=post.votes.count%>,"r":<%=post.posts.count%>},
+<% end %>
+]
