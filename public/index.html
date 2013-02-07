@@ -1,10 +1,70 @@
 <head>
     <title>Welcome</title>
     <script src="/jquery.js"></script>
-    <script></script>
+    <script>
+    var is_login, username, is_admin;
+    is_login = false;
+    username = "";
+    userid = -1;
+    is_admin = false;
+    function load() {
+        $.get("/users/api_is_login.json",function (json,code) {
+            console.log("api_is_login");
+            console.log(json);
+            console.log(code);
+            if (json != null) {
+                $("th#nav1")[0].innerHTML = "<a href='/users/" + json.id + "/edit' target='_blank'>" + json.name + "</a>, welcome back! <a href='/users/login?user[name]=logout'>logout</a>"
+                username = json.name;
+                userid = json.id;
+                is_login = true;
+            } else {
+                $("th#nav1")[0].innerHTML = "<form action='/users/login' method='POST'>username:<input type='text' name='user[name]' size=6/>password:<input type='password' name='user[password]' size=6/><input type='submit' value='login'></form>"
+                is_login = false;
+            }
+        });
+        $.get("/users/api_is_admin.json", function (json,code){
+            var l;
+            console.log("api_is_admin");
+            console.log(json);
+            console.log(code);
+            if (json) {
+                $("th#nav2")[0].innerHTML = "<a href='/users' target='_blank'>Manage Users</a>";
+            } else {
+                $("th#nav2")[0].innerHTML = "<a href='#' id='list_user_link'></a>";
+                l=$("a#list_user_link")[0];
+                l.innerHTML = "List users";
+                l.onclick = function () {
+                    if (l.innerHTML == "List users") {
+                        $.get('/users/api_list.json', function (json,code) {
+                            var list, i;
+                            console.log("(users/)api_list");
+                            console.log(json);
+                            console.log(code);
+                            list = "";
+                            $("div#user_list").innerHTML = "";
+                            l.innerHTML = "Hide user list";
+                            for (i = 0; i < json.length; i++) {
+                                list += json[i].name;
+                                if (json[i].id == userid) {
+                                    list += "&nbsp;(you)";
+                                }
+                                list += "</br>";
+                            }
+                            list = "";
+                        });
+                    } else {
+                        l.innerHTML = "List users";
+                        $("div#user_list").innerHTML = "";
+                    }
+                };
+            }
+        });
+    }
+    $(document).ready(load);
+    </script>
 </head>
 <body>
-<table cellspacing="0"><tr><th id="nav1"></th><th id="nav2"></th></tr>
+<table cellspacing="0"><tr><th id="nav1"></th><th id="nav2"></th></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr>
     <tr>
         <td><table width="200" border="0" cellspacing="0" id="plists">
             <tr>

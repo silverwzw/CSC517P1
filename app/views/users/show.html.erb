@@ -12,4 +12,5 @@
 
 
 <%= link_to 'Edit', edit_user_path(@user) %> |
-<%= link_to 'Back', users_path %>
+<%= link_to 'Back', users_path %> |
+<%= link_to 'Close', "javascript:window.opener=null;window.open('', '_self');window.close();" %>

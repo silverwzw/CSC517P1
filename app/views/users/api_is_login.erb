@@ -1,1 +1,5 @@
-<%=@is_in%>
+<% if @is_in%>
+{"id":"<%= @user_id %>","name":"<%=@username%>"}
+<% else %>
+null
+<% end %>

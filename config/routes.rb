@@ -2,14 +2,17 @@ Project1::Application.routes.draw do
   match 'users/login' => 'users#login'
   match 'posts/api_list' => 'posts#api_list'
   match 'posts/api_show' => 'posts#api_show'
+  match 'users/api_is_login' => 'users#api_is_login'
+  match 'users/api_is_admin' => 'users#api_is_admin'
+  match 'users/api_list' => 'users#api_list'
   match 'db_init' => 'application#db_reset'
   match 'votes/api_add_vote' => 'votes#api_add_vote'
   match 'votes/api_delete_vote' => 'votes#api_delete_vote'
 
-  resources :posts
+  #resources :posts
 
 
-  resources :votes
+  #resources :votes
 
 
   resources :users
