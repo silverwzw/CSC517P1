@@ -81,24 +81,23 @@ class VotesController < ApplicationController
     end
   end
 
-
-    def api_add_vote
-      if Vote.is_vote_owner(session[:user_id], params[:id])
-        flash[:notice] = 'Cannot vote for own post.'
-      elsif Vote.has_voted(session[:user_id], params[:id])
-        flash[:notice] = 'Cannot vote for the same post twice.'
-      else
-        @vote = Vote.new
-        @vote.user_id = session[:user_id]
-        @vote.post_id = params[:id]
-        @vote.save
-        redirect_to :back
-      end
+  def api_add_vote
+    if Vote.is_vote_owner(session[:user_id], params[:id])
+      flash[:notice] = 'Cannot vote for own post.'
+    elsif Vote.has_voted(session[:user_id], params[:id])
+      flash[:notice] = 'Cannot vote for the same post twice.'
+    else
+      @vote = Vote.new
+      @vote.user_id = session[:user_id]
+      @vote.post_id = params[:id]
+      @vote.save
+      redirect_to :back
     end
+  end
 
-    def api_delete_vote
-        @vote = Vote.find_by_user_id_and_post_id(session[:user_id], params[:id])
-        @vote.destroy
-        redirect_to :back
-    end
+  def api_delete_vote
+      @vote = Vote.find_by_user_id_and_post_id(session[:user_id], params[:id])
+      @vote.destroy
+      redirect_to :back
+  end
 end
