@@ -1,5 +1,5 @@
 [
-<% @users.find_each do |usr|%>
+<% @users.each do |usr|%>
     {"id":<%=usr.id%>,"name":"<%=usr.name%>"},
 <% end %>
 ]

@@ -136,11 +136,12 @@ class UsersController < ApplicationController
   # POST /users/login
   # POST /users/login.json
   def login
+    @result = false
     if(params[:user][:name] == "logout")
       session[:user_id] = -1
       respond_to do |format|
         format.html {redirect_to "/msg?bye!"}
-        format.json
+#        format.json
       end
       return
     end
@@ -156,14 +157,14 @@ class UsersController < ApplicationController
     if @user.password == params[:user][:password]
       session[:user_id] = @user.id
       respond_to do |format|
-        format.html {redirect_to "/posts"}
-        format.json
+        format.html {redirect_to "/"}
+#        format.json
       end
     else
       session.clear
       respond_to do |format|
         format.html {redirect_to "/msg.html?login_failed!"}
-        format.json
+#        format.json
       end
     end
   end
@@ -188,24 +189,20 @@ class UsersController < ApplicationController
 
   def api_list
     @users = User.all
-    respond_to do |format|
-      format.html
-    end
   end
 
   def api_is_admin
-    @is_ad = is_admin? ? "null" : "\"admin\""
-    respond_to do |format|
-      format.html
-    end
+    @is_ad = is_admin? ? "true" : "false"
   end
 
   def api_is_login
-    @is_in = is_login? ? "null" : "{\"id\":" + session[:user_id].to_s + ",\"name\":\"" + User.find(session[:user_id]).name + "\"}"
-    respond_to do |format|
-      format.html
+    @is_in = is_login?
+    if (@is_in)
+      @user_id = session[:user_id].to_s
+      @username = User.find(session[:user_id]).name
     end
   end
+
 
   private :is_login?
   private :is_admin?
