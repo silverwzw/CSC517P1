@@ -6,6 +6,8 @@ Project1::Application.routes.draw do
   match 'users/api_is_admin' => 'users#api_is_admin'
   match 'users/api_list' => 'users#api_list'
   match 'db_init' => 'application#db_reset'
+  match 'votes/api_add_vote' => 'votes#api_add_vote'
+  match 'votes/api_delete_vote' => 'votes#api_delete_vote'
 
   #resources :posts
 
