@@ -1,12 +1,13 @@
 {
+"id":<%=@post.id%>,
 "t":"<%=@post.title%>",
 "c":"<%=@post.content%>",
 "v":<%=@post.votes_json%>,
-"u":{"id":<%=@post.user.id%>,"name":<%=@post.user.name%>},
+"u":{"id":<%=@post.user.id%>,"name":"<%=@post.user.name%>"},
 "comments":
     [
-    <% @post.posts.find_each do |pst| %>
-        {"u":{"id":<%pst.user.id%>,"name":"<%=pst.user.name%>"},"c":"<%=pst.content%>","v":<%=pst.votes_json%>,"r":<%=pst.posts.count%>},
+    <% for i in (1..@post.posts.size) %>
+        {"id":<%=@post.posts[i-1].id%>,"u":{"id":<%=@post.posts[i-1].user.id%>,"name":"<%=@post.posts[i-1].user.name%>"},"c":"<%=@post.posts[i-1].content%>","v":<%=@post.posts[i-1].votes_json%>,"r":<%=@post.posts[i-1].posts.count%>}<% if i!=@post.posts.size %>,<% end %>
     <% end %>
     ]
 }

@@ -33,7 +33,7 @@
                 $("th#nav2")[0].innerHTML = "<a href='#' id='list_user_link'></a>";
                 l=$("a#list_user_link")[0];
                 l.innerHTML = "List users";
-                l.onclick = function () {
+                l.onclick = function () {;
                     if (l.innerHTML == "List users") {
                         $.get('/users/api_list.json', function (json,code) {
                             var list, i;
@@ -41,26 +41,82 @@
                             console.log(json);
                             console.log(code);
                             list = "";
-                            $("div#user_list").innerHTML = "";
+                            $("div#user_list")[0].innerHTML = "";
                             l.innerHTML = "Hide user list";
                             for (i = 0; i < json.length; i++) {
                                 list += json[i].name;
                                 if (json[i].id == userid) {
-                                    list += "&nbsp;(you)";
+                                    list += "&nbsp;<b>(you)</b>";
                                 }
                                 list += "</br>";
                             }
-                            list = "";
+                            $("div#user_list")[0].innerHTML = list;
                         });
                     } else {
                         l.innerHTML = "List users";
-                        $("div#user_list").innerHTML = "";
+                        $("div#user_list")[0].innerHTML = "";
                     }
                 };
             }
         });
+        $.get("/posts/api_list.json", function (json,code){
+            var tb,np,el,i;
+            console.log("(posts/)api_list");
+            console.log(json);
+            console.log(code);
+            tb = $("table#plists")[0];
+            for (i = 0; i < json.length; i++) {
+                np = document.createElement("tr");
+                el = document.createElement("td");
+                el.innerHTML = "<a href='javascript:show(" + json[i].id + ")'>" + json[i].t + "</a>";
+                np.appendChild(el);
+                el = document.createElement("td");
+                el.innerHTML = json[i].u;
+                np.appendChild(el);
+                el = document.createElement("td");
+                el.innerHTML = json[i].r;
+                np.appendChild(el);
+                el = document.createElement("td");
+                el.innerHTML = json[i].v;
+                np.appendChild(el);
+                tb.appendChild(np);
+            }
+        });
     }
     $(document).ready(load);
+    function vote(i) {
+        console.log("vote : " + i)
+    }
+    function show(i) {
+        $.get("/posts/api_show.json?id="+i, function (json,code){
+            var j,tb;
+            console.log("(posts/)api_show");
+            console.log(json);
+            console.log(code);
+            $("tr.is_comment").remove();
+            $("th#ptitle")[0].innerHTML = json.t;
+            $("th#pauthor")[0].innerHTML = json.u.name;
+            $("th#pvotes")[0].innerHTML = json.v.length  + "&nbsp;&nbsp;(<a href='javascript:vote(" + json.id + ")'>+</a>)";
+            $("td#pcontent")[0].innerHTML = json.c;
+            tb = $("table#pmain")[0];
+            for (j = 0; j < json.comments.length; j++) {
+                var comment,nc,el;
+                comment = json.comments[j];
+                nc = document.createElement("tr");
+                el = document.createElement("td");
+                el.innerHTML = comment.u.name + "&nbsp;says:";
+                nc.appendChild(el);
+                el = document.createElement("td");
+                el.innerHTML = comment.c;
+                nc.appendChild(el);
+                el = document.createElement("td");
+                el.innerHTML = comment.v.length + "&nbsp;&nbsp;(<a href='javascript:vote(" + json.id + ")'>+</a>)";
+                nc.appendChild(el);
+                $(nc).addClass("is_comment");
+                tb.appendChild(nc);
+            }
+        });
+    }
     </script>
 </head>
 <body>

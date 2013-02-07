@@ -1,5 +1,1 @@
-[
-<% @users.each do |usr|%>
-    {"id":<%=usr.id%>,"name":"<%=usr.name%>"},
-<% end %>
-]
+[<% for i in (1..@users.size)%>{"id":<%=@users[i-1].id%>,"name":"<%=@users[i-1].name%>"}<% if i != @users.size %>,<% end end %>]

@@ -14,11 +14,6 @@ class PostsController < ApplicationController
   # GET /posts/1.json
   def api_show
     @post = Post.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @post }
-    end
   end
 
   # GET /posts/new
@@ -80,16 +75,8 @@ class PostsController < ApplicationController
 #     format.json { head :no_content }
     end
   end
-
-  def api_query
-
-  end
-
   def api_list
     @posts = Post.where("Post_id IS NULL")
-    respond_to do |format|
-      format.html
-    end
   end
 
 end

@@ -7,9 +7,12 @@ class Post < ActiveRecord::Base
 
   def votes_json
     @js_str = "["
-    votes.find_each { |vt|
-      @js_str += vt.user.id.to_s + ","
-    }
+    for i in (1..votes.size)
+      @js_str += votes[i-1].user.id.to_s
+      if (i != votes.size)
+        @js_str += ","
+      end
+    end
     @js_str += "]"
     return @js_str
   end
