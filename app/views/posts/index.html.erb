@@ -12,6 +12,11 @@
   <tr>
     <td><%= post.content %></td>
     <td><%= link_to 'Show', post %></td>
+    <% if Vote.has_voted(session[:user_id], post.id) %>
+        <td><%= link_to 'Unvote', :controller => "votes", :action => "api_delete_vote", :id => post.id  %></td>
+    <%else %>
+        <td><%= link_to 'Vote', :controller => "votes", :action => "api_add_vote", :id => post.id  %></td>
+    <% end %>
     <td><%= link_to 'Edit', edit_post_path(post) %></td>
     <td><%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
   </tr>

@@ -3,6 +3,8 @@ Project1::Application.routes.draw do
   match 'posts/api_list' => 'posts#api_list'
   match 'posts/api_show' => 'posts#api_show'
   match 'db_init' => 'application#db_reset'
+  match 'votes/api_add_vote' => 'votes#api_add_vote'
+  match 'votes/api_delete_vote' => 'votes#api_delete_vote'
 
   resources :posts
 
