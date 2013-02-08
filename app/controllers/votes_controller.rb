@@ -81,23 +81,33 @@ class VotesController < ApplicationController
     end
   end
 
-  def api_add_vote
-    if Vote.is_vote_owner(session[:user_id], params[:id])
-      flash[:notice] = 'Cannot vote for own post.'
-    elsif Vote.has_voted(session[:user_id], params[:id])
-      flash[:notice] = 'Cannot vote for the same post twice.'
-    else
-      @vote = Vote.new
-      @vote.user_id = session[:user_id]
-      @vote.post_id = params[:id]
-      @vote.save
-      redirect_to :back
+  def api_add
+    if vote_owner?(session[:user_id], params[:id]) ||  has_voted?(session[:user_id], params[:id])
+      return
     end
+    @vote = Vote.new
+    @vote.user = User.find(session[:user_id])
+    @vote.post = Post.find(params[:id])
+    @vote.save
   end
 
-  def api_delete_vote
-      @vote = Vote.find_by_user_id_and_post_id(session[:user_id], params[:id])
-      @vote.destroy
-      redirect_to :back
+  def api_delete
+      @vote = Vote.where("user_id = ? AND post_id = ?", session[:user_id], params[:id])
+      if (@vote.count > 0)
+        @vote[0].destroy
+        @result = true
+      end
+    @result = false
   end
+
+  def vote_owner?(u, p)
+    return (Post.find(p).user_id == u)
+  end
+
+  def has_voted?(u, p)
+    return (Vote.where("user_id = ? AND post_id = ?",u, p).count > 0)
+  end
+
+  private :has_voted?
+  private :vote_owner?
 end

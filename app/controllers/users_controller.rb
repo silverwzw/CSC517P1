@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   # GET /users.json
   def index
     @users = User.all
-    if User.is_login?
+    if User.is_login?(session)
       @username = User.find(session[:user_id]).name
     else
       @username = ""
@@ -17,7 +17,7 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
-    if !(User.is_login?)
+    if !(User.is_login?(session))
       respond_to do |format|
         format.html {redirect_to "/msg.html?please_log_in_first"}
         format.json
@@ -25,7 +25,7 @@ class UsersController < ApplicationController
       return
     end
     @user = User.find(params[:id])
-    if !(User.is_admin? or User.is_user?(@user.name))
+    if !(User.is_admin?(session) or User.is_user?(session,@user.name))
       respond_to do |format|
         format.html {redirect_to "/msg.html?you_do_not_have_required_permission"}
         format.json
@@ -52,7 +52,7 @@ class UsersController < ApplicationController
   # GET /users/1/edit
   def edit
     @user = User.find(params[:id])
-    if !(User.is_admin? or User.is_user?(@user.name))
+    if !(User.is_admin?(session) or User.is_user?(session,@user.name))
       respond_to do |format|
         format.html {redirect_to "/msg.html?you_do_not_have_required_permission"}
         format.json
@@ -91,7 +91,7 @@ class UsersController < ApplicationController
   # PUT /users/1.json
   def update
     @user = User.find(params[:id])
-    if !(User.is_admin? or User.is_user?(@user.name))
+    if !(User.is_admin?(session) or User.is_user?(session,@user.name))
       respond_to do |format|
         format.html {redirect_to "/msg.html?you_do_not_have_required_permission"}
         format.json
@@ -114,8 +114,8 @@ class UsersController < ApplicationController
   # DELETE /users/1.json
   def destroy
     @user = User.find(params[:id])
-    @is_ad = User.is_admin?
-    if !(@is_ad or User.is_user?(@user.name))
+    @is_ad = User.is_admin?(session)
+    if !(@is_ad or User.is_user?(session,@user.name))
       respond_to do |format|
         format.html {redirect_to "/msg.html?you_do_not_have_required_permission"}
         format.json
@@ -174,11 +174,11 @@ class UsersController < ApplicationController
   end
 
   def api_is_admin
-    @is_ad = User.is_admin? ? "true" : "false"
+    @is_ad = User.is_admin?(session) ? "true" : "false"
   end
 
   def api_is_login
-    @is_in = User.is_login?
+    @is_in = User.is_login?(session)
     if (@is_in)
       @user_id = session[:user_id].to_s
       @username = User.find(session[:user_id]).name

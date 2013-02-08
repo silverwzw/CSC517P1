@@ -84,8 +84,25 @@
         });
     }
     $(document).ready(load);
-    function vote(i) {
-        console.log("vote : " + i)
+    function vote_href(uid,pobj) {
+        var str = "";
+        if (pobj.u.id == uid) { //is owner
+            return pobj.v.length.toString();
+        }
+        str += "<div>" + pobj.v.length;
+        if ($.inArray(uid,pobj.v) > -1) {
+            str += "<a href='#' onclick='devote("+uid+","+ pobj.id+")'>(-)";
+        } else {
+            str += "<a href='#' onclick='vote("+uid+","+ pobj.id+")'>(+)";
+        }
+        str += "</a></div>";
+        return str;
+    }
+    function vote(uid,pid) {
+        console.log("vote : " + pid);
+    }
+    function devote(uid, pid) {
+        console.log("devote : " + pid);
     }
     function show(i) {
         $.get("/posts/api_show.json?id="+i, function (json,code){
