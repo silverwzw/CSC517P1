@@ -2,7 +2,7 @@
     <title>Welcome</title>
     <script src="/jquery.js"></script>
     <script>
-    var is_login, username, is_admin;
+    var is_login, username, is_admin,save,userid;
     is_login = false;
     username = "";
     userid = -1;
@@ -18,7 +18,10 @@
                 userid = json.id;
                 is_login = true;
             } else {
-                $("th#nav1")[0].innerHTML = "<form action='/users/login' method='POST'>username:<input type='text' name='user[name]' size=6/>password:<input type='password' name='user[password]' size=6/><input type='submit' value='login'></form>"
+                var str;
+                str = "<form action='/users/login' method='POST'>name:<input type='text' name='user[name]' size=6/>password:<input type='password' name='user[password]' size=6/><input type='submit' value='login'></form>";
+                str += "<a href='/users/new' target='_blank'>Register!</a>";
+                $("th#nav1")[0].innerHTML += str;
                 is_login = false;
             }
         });
@@ -86,23 +89,41 @@
     $(document).ready(load);
     function vote_href(uid,pobj) {
         var str = "";
-        if (pobj.u.id == uid) { //is owner
+        if (pobj.u.id == uid || uid == -1) { //is owner or not logged in
             return pobj.v.length.toString();
         }
         str += "<div>" + pobj.v.length;
         if ($.inArray(uid,pobj.v) > -1) {
-            str += "<a href='#' onclick='devote("+uid+","+ pobj.id+")'>(-)";
+            str += "<a href='#' onclick='devote("+ pobj.id+",this);'>(-)";
         } else {
-            str += "<a href='#' onclick='vote("+uid+","+ pobj.id+")'>(+)";
+            str += "<a href='#' onclick='vote("+ pobj.id+",this);'>(+)";
         }
         str += "</a></div>";
         return str;
     }
-    function vote(uid,pid) {
-        console.log("vote : " + pid);
+    function vote(pid,obj) {
+        $.get("/votes/api_add.json?id=" + pid,function(json,code) {
+            console.log("api_add");
+            console.log(json);
+            console.log(code);
+            if(json) {
+                var v;
+                v = Number(obj.parentNode.firstChild.data) + 1;
+                obj.parentNode.innerHTML = v.toString() + "<a href='#' onclick='devote(" + pid + ",this);'>(-)</a>";
+            }
+        });
     }
-    function devote(uid, pid) {
-        console.log("devote : " + pid);
+    function devote(pid,obj) {
+        $.get("/votes/api_delete.json?id=" + pid,function(json,code) {
+            console.log("api_delete");
+            console.log(json);
+            console.log(code);
+            if(json) {
+                var v;
+                v = Number(obj.parentNode.firstChild.data) - 1;
+                obj.parentNode.innerHTML = v.toString() + "<a href='#' onclick='vote(" + pid + ",this);'>(+)</a>";
+            }
+        });
     }
     function show(i) {
         $.get("/posts/api_show.json?id="+i, function (json,code){
@@ -113,7 +134,7 @@
             $("tr.is_comment").remove();
             $("th#ptitle")[0].innerHTML = json.t;
             $("th#pauthor")[0].innerHTML = json.u.name;
-            $("th#pvotes")[0].innerHTML = json.v.length  + "&nbsp;&nbsp;(<a href='javascript:vote(" + json.id + ")'>+</a>)";
+            $("th#pvotes")[0].innerHTML = vote_href(userid,json);
             $("td#pcontent")[0].innerHTML = json.c;
             tb = $("table#pmain")[0];
             for (j = 0; j < json.comments.length; j++) {
@@ -127,7 +148,7 @@
                 el.innerHTML = comment.c;
                 nc.appendChild(el);
                 el = document.createElement("td");
-                el.innerHTML = comment.v.length + "&nbsp;&nbsp;(<a href='javascript:vote(" + json.id + ")'>+</a>)";
+                el.innerHTML = vote_href(userid,comment);
                 nc.appendChild(el);
                 $(nc).addClass("is_comment");
                 tb.appendChild(nc);

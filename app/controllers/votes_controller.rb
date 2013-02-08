@@ -83,12 +83,14 @@ class VotesController < ApplicationController
 
   def api_add
     if vote_owner?(session[:user_id], params[:id]) ||  has_voted?(session[:user_id], params[:id])
+      @result = false
       return
     end
     @vote = Vote.new
     @vote.user = User.find(session[:user_id])
     @vote.post = Post.find(params[:id])
     @vote.save
+    @result = true
   end
 
   def api_delete
@@ -96,6 +98,7 @@ class VotesController < ApplicationController
       if (@vote.count > 0)
         @vote[0].destroy
         @result = true
+        return
       end
     @result = false
   end

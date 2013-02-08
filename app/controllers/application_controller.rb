@@ -20,8 +20,8 @@ class ApplicationController < ActionController::Base
     Post.new({:post => @post_map[1], :title => "c1", :content => "c1c", :user => @user_map[1]}).save()
     @vote_map = {
         1 => Vote.new({:user => @user_map[1], :post => @post_map[1]}),
-        2 => Vote.new({:user => @user_map[1], :post => @post_map[2]}),
-        3 => Vote.new({:user => @user_map[1], :post => @post_map[2]})
+        2 => Vote.new({:user => @user_map[3], :post => @post_map[2]}),
+        3 => Vote.new({:user => @user_map[2], :post => @post_map[2]})
     }
     @vote_map.each {|vt| vt[1].save}
   end
