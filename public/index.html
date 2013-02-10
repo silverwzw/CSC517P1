@@ -19,8 +19,8 @@
                 is_login = true;
             } else {
                 var str;
-                str = "<form action='/users/login' method='POST'>name:<input type='text' name='user[name]' size=6/>password:<input type='password' name='user[password]' size=6/><input type='submit' value='login'></form>";
-                str += "<a href='/users/new' target='_blank'>Register!</a>";
+                str = "<form action='/users/login' method='POST'>name:<input type='text' name='user[name]' size=6/>password:<input type='password' name='user[password]' size=6/><input type='submit' value='login'>";
+                str += "or <a href='/users/new' target='_blank'>Register!</a></form>";
                 $("th#nav1")[0].innerHTML += str;
                 is_login = false;
             }
@@ -62,12 +62,22 @@
                 };
             }
         });
-        $.get("/posts/api_list.json", function (json,code){
-            var tb,np,el,i;
+        load_plist_by_filter("");
+    }
+    function load_plist_by_filter(filter) {
+        if (filter == null) {
+            filter ="";
+        }
+        $.get("/posts/api_list.json" + ((filter == "") ? "" : ("?" + filter)), function (json,code){
+            var tb,np,el, i,trs;
             console.log("(posts/)api_list");
             console.log(json);
             console.log(code);
-            tb = $("table#plists")[0];
+            tb = $("table#plists").find("tbody")[0];
+            trs = $(tb).find("tr");
+            for (i = 1; i < trs.length; i++) {
+                trs[i].remove();
+            }
             for (i = 0; i < json.length; i++) {
                 np = document.createElement("tr");
                 el = document.createElement("td");
@@ -143,11 +153,14 @@
                 nc = document.createElement("tr");
                 el = document.createElement("td");
                 el.innerHTML = comment.u.name + "&nbsp;says:";
+                el.width = 80;
                 nc.appendChild(el);
+                /*el = document.createElement("td");
+                el.colspan = 2;
+                el.innerHTML = comment.c;*/
+                nc.appendChild($("<td colspan='2'>" + comment.c + "</td>")[0]);
                 el = document.createElement("td");
-                el.innerHTML = comment.c;
-                nc.appendChild(el);
-                el = document.createElement("td");
+                el.align = 'middle';
                 el.innerHTML = vote_href(userid,comment);
                 nc.appendChild(el);
                 $(nc).addClass("is_comment");
@@ -158,21 +171,21 @@
     </script>
 </head>
 <body>
-<table cellspacing="0"><tr><th id="nav1"></th><th id="nav2"></th></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+<table cellspacing="0"><tr><th id="nav1" valign="top" align="left"></th><th id="nav2" valign="top" align="right"></th></tr><tr><td colspan="2"><hr>&nbsp;<hr></td></tr>
     <tr>
-        <td><table width="200" border="0" cellspacing="0" id="plists">
+        <td valign="top"><table border="0" cellspacing="0" id="plists"><tbody>
             <tr>
-                <th>Posts</th>
-                <th>Author</th>
-                <th>Replies</th>
-                <th>Votes</th>
-            </tr>
+                <th width="320">Posts</th>
+                <th width="50">Author</th>
+                <th width="50">Replies</th>
+                <th width="50">Votes</th>
+            </tr></tbody>
         </table></td>
-        <td><div id="user_list"></div><table width="200" border="0" cellspacing="0" id="pmain">
+        <td valign="top"><div id="user_list"></div><table width="320" border="0" cellspacing="0" id="pmain">
             <tr>
-                <th id="ptitle"></th>
-                <th id="pauthor"></th>
-                <th id="pvotes"></th>
+                <th id="ptitle" colspan="2"></th>
+                <th id="pauthor" width="50"></th>
+                <th id="pvotes" width="40"></th>
             </tr>
             <tr>
                 <td colspan="4" id="pcontent"></td>
