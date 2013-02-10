@@ -64,19 +64,19 @@ class PostsController < ApplicationController
     end
   end
 
-  # DELETE /posts/1
-  # DELETE /posts/1.json
-  def destroy
+  def api_delete
     @post = Post.find(params[:id])
-    @post.destroy
-
-    respond_to do |format|
-      format.html { redirect_to posts_url }
-#     format.json { head :no_content }
+    if (User.is_admin?(session) || User.is_user?(session, @post.user.name))
+      @post.votes.each {|v| v.destory}
+      @post.comments.each {|c| c.destory}
+      @post.destroy
+      @result = true
+      return
     end
+    @result = false
   end
+
   def api_list
     @posts = Post.where("Post_id IS NULL")
   end
-
 end
