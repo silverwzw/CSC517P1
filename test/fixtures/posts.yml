@@ -1,19 +1,24 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
 one:
-  title: p1
-  content: p1c
-  User_id: 3
-  Post_id: 0
+  title: Project Due
+  content: Project will be due soon.
+  user_id: 2
+  category_id: 1
 
 two:
-  title: p2
-  content: p2c
-  User_id: 1
-  Post_id: 0
+  title: New Library
+  content: James Hunt Library is now open to the public.
+  user_id: 1
+  category_id: 2
 
  three:
-  title: p3
-  content: p3c
-  User_id: 1
-  Post_id: 2
+  title: First exam
+  content: The first exam was rather difficult.
+  user_id: 1
+  category_id: 2
+
+  four:
+    content: Agree
+    user_id: 1
+    post_id: 1

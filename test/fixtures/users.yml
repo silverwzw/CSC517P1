@@ -1,17 +1,21 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
 one:
-  name: u1
-  password: u1p
+  name: Steven
+  password: steven
+  admin: 0
 
 two:
-  name: u2
-  password: u2p
+  name: Eric
+  password: eric
+  admin: 0
 
 three:
-  name: u3
-  password: u3p
+  name: Jessi
+  password: jessi
+  admin: 0
 
 four:
-  name: admin
+  name: Admin
   password: admin
+  admin: 1
