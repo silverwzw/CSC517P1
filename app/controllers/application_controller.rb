@@ -13,7 +13,8 @@ class ApplicationController < ActionController::Base
     }).each { |usr| usr[1].save}
     (category_map = {
         1 => Category.new({:name => "Category 1"}),
-        2 => Category.new({:name => "Category 2"})
+        2 => Category.new({:name => "Category 2"}),
+        3 => Category.new({:name => "Other"})
     }).each {|cat| cat[1].save}
     (post_map = {
         1 => Post.new({:post => nil, :title => "p1", :content => "p1c", :user => user_map[3], :category => category_map[1]}),
@@ -48,4 +49,5 @@ class ApplicationController < ActionController::Base
   private :post_del
   private :user_del
   private :vote_del
+  private :category_del
 end

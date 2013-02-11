@@ -33,7 +33,7 @@ function load() {
         console.log("api_is_admin");
         console.log(json);
         if (json) {
-            $("th#nav2")[0].innerHTML = "<a href='/users' target='_blank'>Manage Users</a>";
+            $("th#nav2")[0].innerHTML = "Manage: <a href='/users' target='_blank'>Users</a>&nbsp;<a href='/categories' target='_blank'>Categories</a>";
         } else {
             $("th#nav2")[0].innerHTML = "<a href='#' id='list_user_link'></a>";
             l = $("a#list_user_link")[0];

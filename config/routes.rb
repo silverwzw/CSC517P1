@@ -1,5 +1,5 @@
 Project1::Application.routes.draw do
-  #resources :categories
+
 
 
   match 'categories/api_list' => 'categories#api_list'
@@ -14,13 +14,15 @@ Project1::Application.routes.draw do
   match 'db_init' => 'application#db_reset'
   match 'votes/api_add' => 'votes#api_add'
 
+  resources :users
+  resources :categories
+
   #resources :posts
 
 
   #resources :votes
 
 
-  resources :users
 
 
   # The priority is based upon order of creation:

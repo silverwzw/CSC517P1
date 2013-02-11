@@ -2,53 +2,63 @@ class CategoriesController < ApplicationController
   # GET /categories
   # GET /categories.json
   def index
-    @categories = Category.all
+    if User.is_admin? session
+      @categories = Category.all
 
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @categories }
+      respond_to do |format|
+        format.html # index.html.erb
+      end
     end
   end
 
   # GET /categories/1
   # GET /categories/1.json
   def show
-    @category = Category.find(params[:id])
+    if User.is_admin? session
+      @category = Category.find(params[:id])
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @category }
+      respond_to do |format|
+        format.html # show.html.erb
+      end
     end
   end
 
   # GET /categories/new
   # GET /categories/new.json
   def new
-    @category = Category.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @category }
+    if User.is_admin? session
+      @category = Category.new
+      respond_to do |format|
+        format.html # new.html.erb
+      end
     end
   end
 
   # GET /categories/1/edit
   def edit
-    @category = Category.find(params[:id])
+    if User.is_admin? session
+      @category = Category.find(params[:id])
+    end
   end
 
   # POST /categories
   # POST /categories.json
   def create
-    @category = Category.new(params[:category])
+    if User.is_admin? session
+      @category = Category.new(params[:category])
+      if Category.where("name = ?", @category.name).count > 0
+        respond_to do |format|
+          format.html { redirect_to @category, notice: 'Duplicate category name!' }
+        end
+        return
+      end
 
-    respond_to do |format|
-      if @category.save
-        format.html { redirect_to @category, notice: 'Category was successfully created.' }
-        format.json { render json: @category, status: :created, location: @category }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @category.errors, status: :unprocessable_entity }
+      respond_to do |format|
+        if @category.save
+          format.html { redirect_to @category, notice: 'Category was successfully created.' }
+        else
+          format.html { render action: "new" }
+        end
       end
     end
   end
@@ -56,15 +66,20 @@ class CategoriesController < ApplicationController
   # PUT /categories/1
   # PUT /categories/1.json
   def update
-    @category = Category.find(params[:id])
-
-    respond_to do |format|
-      if @category.update_attributes(params[:category])
-        format.html { redirect_to @category, notice: 'Category was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @category.errors, status: :unprocessable_entity }
+    if User.is_admin? session
+      @category = Category.find(params[:id])
+      if @category.name == "Other"
+        respond_to do |format|
+          format.html  { redirect_to @category, notice: 'Default Category cannot be edited.' }
+        end
+        return
+      end
+      respond_to do |format|
+        if @category.update_attributes(params[:category])
+          format.html { redirect_to @category, notice: 'Category was successfully updated.' }
+        else
+          format.html { render action: "edit" }
+        end
       end
     end
   end
@@ -72,12 +87,26 @@ class CategoriesController < ApplicationController
   # DELETE /categories/1
   # DELETE /categories/1.json
   def destroy
-    @category = Category.find(params[:id])
-    @category.destroy
+    if User.is_admin? session
+      @category = Category.find(params[:id])
+      if @category.name == "Other"
+        respond_to do |format|
+          format.html  { redirect_to @category, notice: 'Default Category cannot be deleted.' }
+        end
+        return
+      end
+      o = Category.where("name = \"Other\"")[0];
+      @category.posts.each { |p|
+        p.category = o;
+        p.save
+      }
 
-    respond_to do |format|
-      format.html { redirect_to categories_url }
-      format.json { head :no_content }
+
+      @category.destroy
+
+      respond_to do |format|
+        format.html { redirect_to categories_url }
+      end
     end
   end
 
