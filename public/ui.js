@@ -27,9 +27,7 @@ function load() {
             username = json.name;
             userid = json.id;
             is_login = true;
-            if (json.name == "admin") {
-                is_admin = true;
-            }
+            is_admin = json.admin;
             $("th#Post_th")[0].innerHTML = 'Posts&nbsp;&nbsp;[<a href="/posts/new" target="_self"><em>CREATE</em></a>]'
         } else {
             var str;
@@ -39,6 +37,8 @@ function load() {
             $("th#Post_th")[0].innerHTML = "Posts"
             is_login = false;
         }
+        load_plist_by_filter("");                   //admin and user see different list, so list should be loaded after call back
+        $("input#search")[0].disabled = false;  //same, clicking search will enforce the list to be shown, disable the button before user id is retrieved
     });
     $.get("/users/api_is_admin.json", function (json,code){
         var l;
@@ -46,6 +46,7 @@ function load() {
         console.log(json);
         if (json) {
             $("th#nav2")[0].innerHTML = "Manage: <a href='/users' target='_blank'>Users</a>&nbsp;<a href='/categories' target='_blank'>Categories</a>";
+            is_admin = true;
         } else {
             $("th#nav2")[0].innerHTML = "<a href='#' id='list_user_link'></a>";
             l = $("a#list_user_link")[0];
@@ -98,7 +99,6 @@ function load() {
         }
         load_plist_by_filter(current_filter);
     };
-    load_plist_by_filter("");
 }
 $(document).ready(load);
 function load_plist_by_filter(filter) {

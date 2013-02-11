@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  attr_accessible :name, :password
+  attr_accessible :name, :password, :admin
   has_many :posts, :class_name => "Post"
   has_many :votes, :class_name => "Vote"
 
@@ -18,6 +18,6 @@ class User < ActiveRecord::Base
   end
 
   def self.is_admin?(session)
-    return is_user?(session,"admin")
+    return is_login?(session) && (User.find(session[:user_id]).admin != 0)
   end
 end

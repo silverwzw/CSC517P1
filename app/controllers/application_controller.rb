@@ -6,10 +6,10 @@ class ApplicationController < ActionController::Base
     user_del
     category_del
     (user_map = {
-        1 => User.new({:name => "u1", :password => "u1p"}),
-        2 => User.new({:name => "u2", :password => "u2p"}),
-        3 => User.new({:name => "u3", :password => "u3p"}),
-        :admin => User.new({:name => "admin", :password => "admin"})
+        1 => User.new({:name => "u1", :password => "u1p", :admin => 0}),
+        2 => User.new({:name => "u2", :password => "u2p", :admin => 0}),
+        3 => User.new({:name => "u3", :password => "u3p", :admin => 0}),
+        :admin => User.new({:name => "admin", :password => "admin", :admin => 1})
     }).each { |usr| usr[1].save}
     (category_map = {
         1 => Category.new({:name => "Category 1"}),
@@ -30,12 +30,14 @@ class ApplicationController < ActionController::Base
     session[:user_id] = -1
     respond_to do |format|
       format.html { redirect_to "/"}
+      format.json {render :json => User.all}
     end
   end
 
   def db_check
+    # make sure there's at least an admin and a default category
     respond_to do |format|
-      format.json {render :json => User.where("name = \"admin\"").count == 1 && Category.where("name = \"Other\"").count == 1}
+      format.json {render :json => User.where("admin <> 0").count > 0 && Category.where("name = \"Other\"").count == 1}
     end
   end
 

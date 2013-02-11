@@ -1,4 +1,4 @@
-<% if @username == "" %>
+<% if @user_obj == nil %>
     <h2>Please Login:</h2><br />
     <form action="/users/login" method="POST">
       User name: <input type="text" name="user[name]" value=""/>
@@ -13,19 +13,27 @@
   <tr>
     <th>Name</th>
     <th>Password</th>
+    <th>Admin?</th>
     <th></th>
     <th></th>
     <th></th>
+    <% if @user_obj.admin != 0 %><th></th><% end %>
   </tr>
 
 <% @users.each do |user| %>
-    <% if @username =="admin" or @username == user.name%>
+    <% if @user_obj.admin != 0 or @user_obj.id == user.id%>
   <tr>
     <td><%= user.name %></td>
     <td><%= user.password %></td>
+    <td><%= user.admin != 0 ? "Y" : "N" %></td>
     <td><%= link_to 'Show', user %></td>
     <td><%= link_to 'Edit', edit_user_path(user) %></td>
-    <td><% if user.name != "admin" %><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %><% end %></td>
+    <td><% if @user_obj.admin != 0 && @user_obj.id == user.id %>&nbsp;<% else %><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %><% end %></td>
+    <% if @user_obj.admin != 0 %>
+        <td><% if @user_obj.id != user.id %>
+          <%=link_to (user.admin != 0)?"Revoke admin":"Set admin", "/users/" + user.id.to_s + "/toggle"%>
+              <% end %></td>
+    <% end %>
   </tr>
     <% end %>
 <% end %>

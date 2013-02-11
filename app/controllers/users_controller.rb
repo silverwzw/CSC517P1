@@ -4,9 +4,9 @@ class UsersController < ApplicationController
   def index
     @users = User.all
     if User.is_login?(session)
-      @username = User.find(session[:user_id]).name
+      @user_obj = User.find(session[:user_id])
     else
-      @username = ""
+      @user_obj = nil
     end
     respond_to do |format|
       format.html # index.html.erb
@@ -182,6 +182,22 @@ class UsersController < ApplicationController
     if (@is_in)
       @user_id = session[:user_id].to_s
       @username = User.find(session[:user_id]).name
+      @user_is_admin = User.find(session[:user_id]).admin != 0 ? "true" : "false"
+    end
+  end
+
+  def toggle
+    if User.is_admin? session
+      user = User.find(params[:id])
+      user.admin = (user.admin != 0) ? 0 : 1
+      user.save
+      respond_to do |format|
+        format.html {redirect_to "/users"}
+      end
+    else
+      respond_to do |format|
+        format.html {redirect_to "/msg.html?You_do_not_have_required_permission"}
+      end
     end
   end
 end
