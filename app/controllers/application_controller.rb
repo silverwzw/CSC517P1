@@ -26,6 +26,10 @@ class ApplicationController < ActionController::Base
         2 => Vote.new({:user => user_map[3], :post => post_map[2]}),
         3 => Vote.new({:user => user_map[2], :post => post_map[2]})
     }).each {|vt| vt[1].save}
+    session[:user_id] = -1;
+    respond_to do |format|
+      format.html { redirect_to "/"}
+    end
   end
 
   def post_del

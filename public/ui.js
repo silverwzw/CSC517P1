@@ -11,12 +11,14 @@ function load() {
     $.get("/users/api_is_login.json",function (json,code) {
         console.log("api_is_login");
         console.log(json);
-        console.log(code);
         if (json != null) {
             $("th#nav1")[0].innerHTML = "<a href='/users/" + json.id + "/edit' target='_blank'>" + json.name + "</a>, welcome back! <a href='/users/login?user[name]=logout'>logout</a>"
             username = json.name;
             userid = json.id;
             is_login = true;
+            if (json.name == "admin") {
+                is_admin = true;
+            }
         } else {
             var str;
             str = "<form action='/users/login' method='POST'>name:<input type='text' name='user[name]' size=6/>password:<input type='password' name='user[password]' size=6/><input type='submit' value='login'>";
@@ -29,7 +31,6 @@ function load() {
         var l;
         console.log("api_is_admin");
         console.log(json);
-        console.log(code);
         if (json) {
             $("th#nav2")[0].innerHTML = "<a href='/users' target='_blank'>Manage Users</a>";
         } else {
@@ -41,7 +42,6 @@ function load() {
                 var list, i;
                 console.log("(users/)api_list");
                 console.log(json);
-                console.log(code);
                 list = "";
                 user_list_el[0].innerHTML = "";
                 for (i = 0; i < json.length; i++) {
@@ -66,7 +66,6 @@ function load_plist_by_filter(filter) {
         var tb,np,el, i,trs;
         console.log("(posts/)api_list");
         console.log(json);
-        console.log(code);
         tb = $("table#plists").find("tbody")[0];
         trs = $(tb).find("tr");
         for (i = 1; i < trs.length; i++) {
@@ -109,11 +108,11 @@ function vote(pid,obj) {
     $.get("/votes/api_add.json?id=" + pid,function(json,code) {
         console.log("api_add");
         console.log(json);
-        console.log(code);
         if(json) {
             var v;
             v = Number(obj.parentNode.firstChild.data) + 1;
             obj.parentNode.innerHTML = v.toString() + "<a href='#' onclick='devote(" + pid + ",this);'>(-)</a>";
+            alert("Successfully voted!");
         }
     });
 }
@@ -122,11 +121,11 @@ function devote(pid,obj) {
     $.get("/votes/api_delete.json?id=" + pid,function(json,code) {
         console.log("api_delete");
         console.log(json);
-        console.log(code);
         if(json) {
             var v;
             v = Number(obj.parentNode.firstChild.data) - 1;
             obj.parentNode.innerHTML = v.toString() + "<a href='#' onclick='vote(" + pid + ",this);'>(+)</a>";
+            alert("Successfully removed your vote!");
         }
     });
 }
@@ -136,12 +135,11 @@ function show(i) {
         var j,tb;
         console.log("(posts/)api_show");
         console.log(json);
-        console.log(code);
         toggle_container("POST");
         $("tr.is_comment").remove();
-        $("th#ptitle")[0].innerHTML = json.t;
-        $("th#pauthor")[0].innerHTML = json.u.name;
-        $("th#pvotes")[0].innerHTML = vote_href(userid,json);
+        $("th#ptitle")[0].innerHTML = del_href(json, json.id) + json.t;
+        $("th#pauthor")[0].innerHTML = "By:<br/>" +json.u.name;
+        $("th#pvotes")[0].innerHTML = "Votes:<br/>" + vote_href(userid,json);
         $("td#pcontent")[0].innerHTML = json.c;
         tb = $("table#pmain")[0];
         for (j = 0; j < json.comments.length; j++) {
@@ -150,13 +148,13 @@ function show(i) {
             tb.appendChild($("<tr class='is_comment'><td colspan='4'><hr></td></tr>")[0]);
             nc = document.createElement("tr");
             el = document.createElement("td");
-            el.innerHTML = "<b>" + comment.u.name + "&nbsp;says:</b>";
+            el.innerHTML = del_href(json, comment.id) + "<b>" + comment.u.name + "&nbsp;says:</b>";
             el.width = 80;
             nc.appendChild(el);
             nc.appendChild($("<td colspan='2'>" + comment.c + "</td>")[0]);
             el = document.createElement("td");
             el.align = 'middle';
-            el.innerHTML = vote_href(userid,comment);
+            el.innerHTML = "Votes:<br>" + vote_href(userid,comment);
             nc.appendChild(el);
             $(nc).addClass("is_comment");
             tb.appendChild(nc);
@@ -170,8 +168,6 @@ function toggle_container(s) {
     } else {
         s = s.toUpperCase();
     }
-    console.log("toggle");
-    console.log(s);
     if (s == "POST" && !is_main_post_toggle) {
         is_main_post_toggle = true;
         user_list_el.detach();
@@ -186,4 +182,52 @@ function toggle_container(s) {
         $("td#right_container").append(user_list_el);
         return;
     }
+}
+
+function del_href(json, id) {
+    var i, comment;
+    if (id == json.id) {
+      if (json.u.id == userid || is_admin) {
+            return "<a href='#' onclick='del_post(" + id + ")'><img src='/del.png' /></a>&nbsp;";
+      }
+      return "";
+    }
+    for (i = 0; i < json.comments.length; i++) {
+        comment = json.comments[i];
+        if (comment.id == id) {
+            if (comment.u.id == userid || is_admin) {
+                return "<a href='#' onclick='del_post(" + id + ",this)'><img src='/del.png' /></a>&nbsp;";
+            }
+            return "";
+        }
+    }
+    return "";
+}
+
+function del_post(id, obj) {
+    $.get("/posts/api_delete.json?id=" + id, function (json,code) {
+        var a,i;
+        console.log("(posts/)api_delete?id="+id);
+        console.log(json);
+        if (json.succ == false) {
+            return;
+        }
+        if (typeof obj === "undefined" || obj == null) {
+            $("tr.is_comment").remove();
+            a = $("table#pmain").find("th");
+            for (i = 0; i < a.length; i++) {
+                a[i].innerHTML = "";
+            }
+            $("td#pcontent")[0].innerHTML = "";
+            alert("Successfully deleted the post!");
+            refresh_post_list();
+        } else {
+            alert("Successfully deleted the comment!");
+            show(json.p);
+        }
+    });
+}
+
+function refresh_post_list() {
+    load_plist_by_filter();
 }

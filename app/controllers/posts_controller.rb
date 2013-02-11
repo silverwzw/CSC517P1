@@ -65,11 +65,16 @@ class PostsController < ApplicationController
   end
 
   def api_delete
-    @post = Post.find(params[:id])
-    if (User.is_admin?(session) || User.is_user?(session, @post.user.name))
-      @post.votes.each {|v| v.destory}
-      @post.comments.each {|c| c.destory}
-      @post.destroy
+    post = Post.find(params[:id])
+    if (post.post == nil)
+      @parent = nil;
+    else
+      @parent = post.post.id
+    end
+    if (User.is_admin?(session) || User.is_user?(session, post.user.name))
+      post.votes.each {|v| v.destroy}
+      post.posts.each {|c| c.destroy}
+      post.destroy
       @result = true
       return
     end
