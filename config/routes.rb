@@ -17,8 +17,7 @@ Project1::Application.routes.draw do
 
   resources :users
   resources :categories
-
-  #resources :posts
+  resources :posts
 
 
   #resources :votes

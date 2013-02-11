@@ -28,11 +28,13 @@ function load() {
             if (json.name == "admin") {
                 is_admin = true;
             }
+            $("th#Post_th")[0].innerHTML = 'Posts&nbsp;&nbsp;<a href="/posts/new" target="_self"><em>(CREATE)</em></a>'
         } else {
             var str;
             str = "<form action='/users/login' method='POST'>name:<input type='text' name='user[name]' size=6/>password:<input type='password' name='user[password]' size=6/><input type='submit' value='login'>";
             str += "or <a href='/users/new' target='_blank'>Register!</a></form>";
             $("th#nav1")[0].innerHTML += str;
+            $("th#Post_th")[0].innerHTML = "Posts"
             is_login = false;
         }
     });

@@ -22,8 +22,7 @@ class PostsController < ApplicationController
     @post = Post.new
 
     respond_to do |format|
-      format.html # new.html.erb
-#     format.json { render json: @post }
+      format.html
     end
   end
 
@@ -35,15 +34,20 @@ class PostsController < ApplicationController
   # POST /posts
   # POST /posts.json
   def create
+    if !User.is_login? session
+      respond_to do |format|
+        format.html {redirect_to "/"}
+      end
+    end
+    params[:post][:user] = User.find(session[:user_id])
+    params[:post][:category] = Category.find(params[:post][:category])
     @post = Post.new(params[:post])
 
     respond_to do |format|
       if @post.save
-        format.html { redirect_to @post, notice: 'Post was successfully created.' }
-#       format.json { render json: @post, status: :created, location: @post }
+        format.html { redirect_to "/msg.html?Post_Created!" }
       else
         format.html { render action: "new" }
-#       format.json { render json: @post.errors, status: :unprocessable_entity }
       end
     end
   end
