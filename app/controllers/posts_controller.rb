@@ -92,7 +92,7 @@ class PostsController < ApplicationController
     end
     if params[:user] != nil
       users = User.where("name = ?", params[:user])
-      if (users.count > 0)
+      if users.count > 0
         params[:user] = users[0].id
       else
         params[:user] = -1
@@ -104,5 +104,26 @@ class PostsController < ApplicationController
       condition += " AND content LIKE :keyword"
     end
     @posts = Post.where(condition, params).order("updated_at DESC");
+  end
+
+  def api_reply
+    if User.is_login? session
+      post = Post.find(params[:post_id])
+      if params[:id] == nil
+        Post.new({:content => params[:content], :user => User.find(session[:user_id]), :post => post}).save
+        post.updated_at = Time.now
+        post.save
+      else
+        if (!User.is_admin? session) && (session[:user_id] != post.user.id)
+          @result = false
+          return
+        end
+        post.content = params[:content]
+        post.save
+      end
+      @result = true
+    else
+      @result = false
+    end
   end
 end

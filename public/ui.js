@@ -202,6 +202,33 @@ function show(i) {
             $(nc).addClass("is_comment");
             tb.appendChild(nc);
         }
+        if (is_login) {
+            tb.appendChild($("<tr class='is_comment'><td colspan='4'><hr></td></tr>")[0]);
+            nc = document.createElement("tr");
+            $(nc).addClass("is_comment");
+            nc.appendChild($("<td width='80'>Reply:</td>")[0]);
+            nc.appendChild($("<td colspan='2'><input type='text' id='reply' /></td>")[0]);
+            nc.appendChild($("<td><input type='submit' onclick='reply(" + i + ");' /></td>")[0]);
+            tb.appendChild(nc);
+        }
+    });
+}
+
+function reply(post_id) {
+    var content;
+    content = $("input#reply")[0].value;
+    if (content == "") {
+        alert("Reply cannot be empty!");
+        return;
+    }
+    $.get('/posts/api_reply.json?post_id=' + post_id + "&content="+content, function (json, code) {
+        console.log("api_reply");
+        console.log(json);
+        if (json) {
+            alert("Your reply has been posted!");
+            show(post_id);
+            load_plist_by_filter(current_filter);
+        }
     });
 }
 
@@ -267,6 +294,7 @@ function del_post(id, obj) {
         } else {
             alert("Successfully deleted the comment!");
             show(json.p);
+            load_plist_by_filter(current_filter);
         }
     });
 }
