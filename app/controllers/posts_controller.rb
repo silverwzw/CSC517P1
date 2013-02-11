@@ -87,6 +87,12 @@ class PostsController < ApplicationController
       condition += " AND Category_id = :category"
     end
     if params[:user] != nil
+      users = User.where("name = ?", params[:user])
+      if (users.count > 0)
+        params[:user] = users[0].id
+      else
+        params[:user] = -1
+      end
       condition += " AND User_id = :user"
     end
     if params[:keyword] != nil

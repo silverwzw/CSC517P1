@@ -61,7 +61,7 @@ function load() {
         console.log("(categories/)api_list");
         console.log(json);
         selector = $("select#category")[0];
-        selector.appendChild($("<option>ALL</option>")[0]);
+        selector.appendChild($("<option value='ALL'>ALL</option>")[0]);
         for (i = 0; i < json.length; i++) {
             op = document.createElement("option");
             op.value = json[i].id;
@@ -69,6 +69,23 @@ function load() {
             selector.appendChild(op);
         }
     });
+    $("input#search")[0].onclick = function () {
+        var params;
+        current_filter = "";
+        if ( (params = $("input#keyword")[0].value) != "") {
+            current_filter += (current_filter == "") ? "keyword=" + params : "&keyword=" + params;
+        }
+        if ( (params = $("input#user")[0].value) != "") {
+            current_filter += (current_filter == "") ? "user=" + params : "&user=" + params;
+        }
+        if ( (params = $("select#category")[0].value) != "ALL") {
+            current_filter += (current_filter == "") ? "category=" + params : "&category=" + params;
+        }
+        if (current_filter == "") {
+            current_filter = null;
+        }
+        load_plist_by_filter(current_filter);
+    };
     load_plist_by_filter("");
 }
 $(document).ready(load);
