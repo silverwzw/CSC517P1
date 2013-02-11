@@ -80,4 +80,8 @@ class CategoriesController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def api_list
+    @categories = Category.all
+  end
 end

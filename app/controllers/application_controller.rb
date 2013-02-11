@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
     }).each {|cat| cat[1].save}
     (post_map = {
         1 => Post.new({:post => nil, :title => "p1", :content => "p1c", :user => user_map[3], :category => category_map[1]}),
-        2 => Post.new({:post => nil, :title => "p2", :content => "p2c", :user => user_map[1], :category => category_map[2]}),
+        2 => Post.new({:post => nil, :title => "p2", :content => "p2c kw1", :user => user_map[1], :category => category_map[2]}),
         3 => Post.new({:post => nil, :title => "p3", :content => "p3c", :user => user_map[1], :category => category_map[2]})
     }).each {|pst| pst[1].save}
     Post.new({:post => post_map[1], :title => "c1", :content => "c1c", :user => user_map[1]}).save()
@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
         2 => Vote.new({:user => user_map[3], :post => post_map[2]}),
         3 => Vote.new({:user => user_map[2], :post => post_map[2]})
     }).each {|vt| vt[1].save}
-    session[:user_id] = -1;
+    session[:user_id] = -1
     respond_to do |format|
       format.html { redirect_to "/"}
     end

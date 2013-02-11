@@ -66,12 +66,12 @@ class PostsController < ApplicationController
 
   def api_delete
     post = Post.find(params[:id])
-    if (post.post == nil)
+    if post.post == nil
       @parent = nil
     else
       @parent = post.post.id
     end
-    if (User.is_admin?(session) || User.is_user?(session, post.user.name))
+    if User.is_admin?(session) || User.is_user?(session, post.user.name)
       post.votes.each {|v| v.destroy}
       post.posts.each {|c| c.destroy}
       post.destroy
@@ -82,6 +82,17 @@ class PostsController < ApplicationController
   end
 
   def api_list
-    @posts = Post.where("Post_id IS NULL").order("updated_at DESC");
+    condition = "Post_id IS NULL"
+    if params[:category] != nil
+      condition += " AND Category_id = :category"
+    end
+    if params[:user] != nil
+      condition += " AND User_id = :user"
+    end
+    if params[:keyword] != nil
+      params[:keyword] = "%" + params[:keyword] + "%"
+      condition += " AND content LIKE :keyword"
+    end
+    @posts = Post.where(condition, params).order("updated_at DESC");
   end
 end

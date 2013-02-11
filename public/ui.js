@@ -56,6 +56,19 @@ function load() {
             });
         }
     });
+    $.get("/categories/api_list.json", function (json, code) {
+        var selector, i, op;
+        console.log("(categories/)api_list");
+        console.log(json);
+        selector = $("select#category")[0];
+        selector.appendChild($("<option>ALL</option>")[0]);
+        for (i = 0; i < json.length; i++) {
+            op = document.createElement("option");
+            op.value = json[i].id;
+            op.innerHTML = json[i].n;
+            selector.appendChild(op);
+        }
+    });
     load_plist_by_filter("");
 }
 $(document).ready(load);

@@ -1,7 +1,8 @@
 Project1::Application.routes.draw do
-  resources :categories
+  #resources :categories
 
 
+  match 'categories/api_list' => 'categories#api_list'
   match 'users/login' => 'users#login'
   match 'posts/api_list' => 'posts#api_list'
   match 'posts/api_show' => 'posts#api_show'
