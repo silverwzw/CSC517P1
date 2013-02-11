@@ -12,6 +12,7 @@ Project1::Application.routes.draw do
   match 'votes/api_delete' => 'votes#api_delete'
   match 'posts/api_delete' => 'posts#api_delete'
   match 'db_init' => 'application#db_reset'
+  match 'db_check' => 'application#db_check'
   match 'votes/api_add' => 'votes#api_add'
 
   resources :users

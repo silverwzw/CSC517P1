@@ -9,6 +9,14 @@ function load() {
     main_post_el = $("table#pmain");
     is_main_post_toggle = true;
     user_list_el.detach();
+    $.get('/db_check.json', function (json, code) {
+        console.log('db_check');
+        console.log(json);
+        if (json != true) {
+            document.body.innerHTML = "<h1>Data Integrity check Failed! Trying to reset database......</h1><br /><h2>Please wait a few seconds.</h2>";
+            location.href = "/db_init";
+        }
+    });
     $.get("/users/api_is_login.json",function (json,code) {
         console.log("api_is_login");
         console.log(json);

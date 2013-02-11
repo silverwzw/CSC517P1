@@ -33,6 +33,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def db_check
+    respond_to do |format|
+      format.json {render :json => User.where("name = \"admin\"").count == 1 && Category.where("name = \"Other\"").count == 1}
+    end
+  end
+
   def post_del
     Post.destroy_all
   end
