@@ -67,7 +67,7 @@ class PostsController < ApplicationController
   def api_delete
     post = Post.find(params[:id])
     if (post.post == nil)
-      @parent = nil;
+      @parent = nil
     else
       @parent = post.post.id
     end
@@ -82,6 +82,6 @@ class PostsController < ApplicationController
   end
 
   def api_list
-    @posts = Post.where("Post_id IS NULL")
+    @posts = Post.where("Post_id IS NULL").order("updated_at DESC");
   end
 end

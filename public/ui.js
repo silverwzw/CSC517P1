@@ -1,8 +1,9 @@
-var is_login, username, is_admin, userid, user_list_el, main_post_el, is_main_post_toggle;
+var is_login, username, is_admin, userid, user_list_el, main_post_el, is_main_post_toggle, current_filter;
 is_login = false;
 username = "";
 userid = -1;
 is_admin = false;
+current_filter = null;
 function load() {
     user_list_el = $("div#user_list");
     main_post_el = $("table#pmain");
@@ -113,6 +114,7 @@ function vote(pid,obj) {
             v = Number(obj.parentNode.firstChild.data) + 1;
             obj.parentNode.innerHTML = v.toString() + "<a href='#' onclick='devote(" + pid + ",this);'>(-)</a>";
             alert("Successfully voted!");
+            load_plist_by_filter(current_filter);
         }
     });
 }
@@ -126,6 +128,7 @@ function devote(pid,obj) {
             v = Number(obj.parentNode.firstChild.data) - 1;
             obj.parentNode.innerHTML = v.toString() + "<a href='#' onclick='vote(" + pid + ",this);'>(+)</a>";
             alert("Successfully removed your vote!");
+            load_plist_by_filter(current_filter);
         }
     });
 }
@@ -220,14 +223,10 @@ function del_post(id, obj) {
             }
             $("td#pcontent")[0].innerHTML = "";
             alert("Successfully deleted the post!");
-            refresh_post_list();
+            load_plist_by_filter(current_filter);
         } else {
             alert("Successfully deleted the comment!");
             show(json.p);
         }
     });
-}
-
-function refresh_post_list() {
-    load_plist_by_filter();
 }

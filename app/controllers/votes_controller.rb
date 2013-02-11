@@ -86,10 +86,13 @@ class VotesController < ApplicationController
       @result = false
       return
     end
-    @vote = Vote.new
-    @vote.user = User.find(session[:user_id])
-    @vote.post = Post.find(params[:id])
-    @vote.save
+    vote = Vote.new
+    vote.user = User.find(session[:user_id])
+    vote.post = Post.find(params[:id])
+    vote.save
+    post = Post.find(params[:id])
+    post.created_at = Time.now
+    post.save
     @result = true
   end
 
