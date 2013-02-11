@@ -1,5 +1,9 @@
 class PostsController < ApplicationController
-
+  def index
+    respond_to do |format|
+      format.html {redirect_to "/"}
+    end
+  end
   # GET /posts/1
   # GET /posts/1.json
   def api_show

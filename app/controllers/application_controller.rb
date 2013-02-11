@@ -6,22 +6,22 @@ class ApplicationController < ActionController::Base
     user_del
     category_del
     (user_map = {
-        1 => User.new({:name => "u1", :password => "u1p", :admin => 0}),
-        2 => User.new({:name => "u2", :password => "u2p", :admin => 0}),
-        3 => User.new({:name => "u3", :password => "u3p", :admin => 0}),
+        1 => User.new({:name => "Steven", :password => "steven", :admin => 0}),
+        2 => User.new({:name => "Eric", :password => "eric", :admin => 0}),
+        3 => User.new({:name => "Chunxue", :password => "chunxue", :admin => 0}),
         :admin => User.new({:name => "admin", :password => "admin", :admin => 1})
     }).each { |usr| usr[1].save}
     (category_map = {
-        1 => Category.new({:name => "Category 1"}),
-        2 => Category.new({:name => "Category 2"}),
+        1 => Category.new({:name => "Project"}),
+        2 => Category.new({:name => "Gossip"}),
         3 => Category.new({:name => "Other"})
     }).each {|cat| cat[1].save}
     (post_map = {
-        1 => Post.new({:post => nil, :title => "p1", :content => "p1c", :user => user_map[3], :category => category_map[1]}),
-        2 => Post.new({:post => nil, :title => "p2", :content => "p2c kw1", :user => user_map[1], :category => category_map[2]}),
-        3 => Post.new({:post => nil, :title => "p3", :content => "p3c", :user => user_map[1], :category => category_map[2]})
+        1 => Post.new({:post => nil, :title => "Project Due", :content => "Project will due tomorrow.Gonna hurry", :user => user_map[3], :category => category_map[1]}),
+        2 => Post.new({:post => nil, :title => "New Library", :content => "James Hunt Library is now open to public.....It's fantastic, everyone should go and have a try.", :user => user_map[1], :category => category_map[2]}),
+        3 => Post.new({:post => nil, :title => "1st Exam is hard", :content => "ATT", :user => user_map[1], :category => category_map[2]})
     }).each {|pst| pst[1].save}
-    Post.new({:post => post_map[1], :title => "c1", :content => "c1c", :user => user_map[1]}).save()
+    Post.new({:post => post_map[1], :content => "Agree", :user => user_map[1]}).save()
     (vote_map = {
         1 => Vote.new({:user => user_map[1], :post => post_map[1]}),
         2 => Vote.new({:user => user_map[3], :post => post_map[2]}),
@@ -30,7 +30,6 @@ class ApplicationController < ActionController::Base
     session[:user_id] = -1
     respond_to do |format|
       format.html { redirect_to "/"}
-      format.json {render :json => User.all}
     end
   end
 

@@ -15,7 +15,7 @@ function load() {
         console.log('db_check');
         console.log(json);
         if (json != true) {
-            document.body.innerHTML = "<h1>Data Integrity check Failed! Trying to reset database......</h1><br /><h2>Please wait a few seconds.</h2>";
+            document.body.innerHTML = "<h1>Data Integrity check Failed! Trying to reset database......</h1><br /><h2>Please wait for a few seconds.</h2>";
             location.href = "/db_init";
         }
     });
