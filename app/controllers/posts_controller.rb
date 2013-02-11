@@ -108,12 +108,13 @@ class PostsController < ApplicationController
 
   def api_reply
     if User.is_login? session
-      post = Post.find(params[:post_id])
       if params[:id] == nil
+        post = Post.find(params[:post_id])
         Post.new({:content => params[:content], :user => User.find(session[:user_id]), :post => post}).save
         post.updated_at = Time.now
         post.save
       else
+        post = Post.find(params[:id])
         if (!User.is_admin? session) && (session[:user_id] != post.user.id)
           @result = false
           return
