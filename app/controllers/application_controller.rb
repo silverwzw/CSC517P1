@@ -8,8 +8,8 @@ class ApplicationController < ActionController::Base
     (user_map = {
         1 => User.new({:name => "Steven", :password => "steven", :admin => 0}),
         2 => User.new({:name => "Eric", :password => "eric", :admin => 0}),
-        3 => User.new({:name => "Chunxue", :password => "chunxue", :admin => 0}),
-        :admin => User.new({:name => "admin", :password => "admin", :admin => 1})
+        3 => User.new({:name => "Jessi", :password => "jessi", :admin => 0}),
+        :admin => User.new({:name => "Admin", :password => "admin", :admin => 1})
     }).each { |usr| usr[1].save}
     (category_map = {
         1 => Category.new({:name => "Project"}),
