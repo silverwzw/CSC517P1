@@ -177,27 +177,28 @@ function devote(pid,obj) {
 
 function show(i) {
     $.get("/posts/api_show.json?id="+i, function (json,code){
-        var j,tb;
+        var j,tb,edit;
         console.log("(posts/)api_show");
         console.log(json);
         toggle_container("POST");
         $("tr.is_comment").remove();
-        $("th#ptitle")[0].innerHTML = del_href(json, json.id) + json.t;
+        edit = (userid == json.u.id || is_admin) ? "<a href='/posts/" + json.id + "/edit'><img src='/edit.gif' alt='Edit this post'/></a> ":"";
+        $("th#ptitle")[0].innerHTML = edit + del_href(json, json.id) + json.t;
         $("th#pauthor")[0].innerHTML = "By:<br/>" +json.u.name;
         $("th#pvotes")[0].innerHTML = "Votes:<br/>" + vote_href(userid,json);
         $("td#pcontent")[0].innerHTML = json.c;
         tb = $("table#pmain")[0];
         for (j = 0; j < json.comments.length; j++) {
-            var comment,nc,el,edit;
+            var comment,nc,el;
             comment = json.comments[j];
             tb.appendChild($("<tr class='is_comment'><td colspan='4'><hr></td></tr>")[0]);
             nc = document.createElement("tr");
             el = document.createElement("td");
-            el.innerHTML = del_href(json, comment.id) + "<b>" + comment.u.name + "&nbsp;says:</b>";
-            el.width = 80;
+            edit = (userid == comment.u.id || is_admin) ? "<a href='#' onclick='edit_reply(this," + comment.id + "," + json.id + ");'><img src='/edit.gif' alt='Edit this Post' /></a>" : "";
+            el.innerHTML = edit + del_href(json, comment.id) + "<b>" + comment.u.name + "&nbsp;says:</b>";
+            el.width = 100;
             nc.appendChild(el);
-            edit = (userid == comment.u.id || is_admin) ? "&nbsp;[<a href='#' onclick='edit_reply(this," + comment.id + "," + json.id + ");'>EDIT</a>]" : "";
-            nc.appendChild($("<td colspan='2'>" + comment.c + edit + "</td>")[0]);
+            nc.appendChild($("<td colspan='2'>" + comment.c + "</td>")[0]);
             el = document.createElement("td");
             el.align = 'middle';
             el.innerHTML = "Votes:<br>" + vote_href(userid,comment);
@@ -209,7 +210,7 @@ function show(i) {
             tb.appendChild($("<tr class='is_comment'><td colspan='4'><hr></td></tr>")[0]);
             nc = document.createElement("tr");
             $(nc).addClass("is_comment");
-            nc.appendChild($("<td width='80'>Add Reply:</td>")[0]);
+            nc.appendChild($("<td width='100'>Add Reply:</td>")[0]);
             nc.appendChild($("<td colspan='2'><input type='text' id='reply' /></td>")[0]);
             nc.appendChild($("<td><input type='submit' onclick='reply(" + i + ");' /></td>")[0]);
             tb.appendChild(nc);
@@ -261,7 +262,7 @@ function del_href(json, id) {
     var i, comment;
     if (id == json.id) {
       if (json.u.id == userid || is_admin) {
-            return "<a href='#' onclick='del_post(" + id + ")'><img src='/del.png' /></a>&nbsp;";
+            return "<a href='#' onclick='del_post(" + id + ")'><img src='/del.png' alt='Delete this post'/></a>&nbsp;";
       }
       return "";
     }
@@ -269,7 +270,7 @@ function del_href(json, id) {
         comment = json.comments[i];
         if (comment.id == id) {
             if (comment.u.id == userid || is_admin) {
-                return "<a href='#' onclick='del_post(" + id + ",this)'><img src='/del.png' /></a>&nbsp;";
+                return "<a href='#' onclick='del_post(" + id + ",this)'><img src='/del.png' alt='Delete this reply'/></a>&nbsp;";
             }
             return "";
         }

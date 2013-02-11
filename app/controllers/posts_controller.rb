@@ -1,14 +1,4 @@
 class PostsController < ApplicationController
-  # GET /posts
-  # GET /posts.json
-  def index
-    @posts = Post.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-#     format.json { render json: @posts }
-    end
-  end
 
   # GET /posts/1
   # GET /posts/1.json
@@ -57,15 +47,22 @@ class PostsController < ApplicationController
   def update
     @post = Post.find(params[:id])
 
-    respond_to do |format|
-      if @post.update_attributes(params[:post])
-        format.html { redirect_to @post, notice: 'Post was successfully updated.' }
-#       format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-#       format.json { render json: @post.errors, status: :unprocessable_entity }
+    if (User.is_admin? session || session[:user_id] == @post.user.id)
+      params[:post][:category] = Category.find(params[:post][:category])
+      respond_to do |format|
+        if @post.update_attributes(params[:post])
+          format.html { redirect_to "/"}
+        else
+          format.html { render action: "edit" }
+        end
+      end
+    else
+      respond_to do |format|
+        format.html {redirect_to "/msg.html?You_cannot_edit_that_post"}
       end
     end
+
+
   end
 
   def api_delete
