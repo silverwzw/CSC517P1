@@ -1,5 +1,5 @@
 [
-<% for i in (0..@posts.size) %>
-    {"id":"<%=@posts[i-1].id%>","u":"<%=@posts[i-1].user.name%>","t":"<%=@posts[i-1].title%>","v":<%=@posts[i-1].votes.count%>,"r":<%=@posts[i-1].posts.count%>}<% if i != @posts.size %>,<% end %>
+<% for i in (1..@posts.size) %>
+    {"id":<%=@posts[i-1].id%>,"u":{"n":"<%=@posts[i-1].user.name%>","id":<%=@posts[i-1].user.id%>},"t":"<%=@posts[i-1].title%>","v":<%=@posts[i-1].votes.count%>,"r":<%=@posts[i-1].posts.count%>,"category":{"n":"<%=@posts[i-1].category.name%>","id":<%=@posts[i-1].category.id%>}}<% if i != @posts.size %>,<% end %>
 <% end %>
 ]

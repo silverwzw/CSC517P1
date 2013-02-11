@@ -1,197 +1,48 @@
 <head>
     <title>Welcome</title>
     <script src="/jquery.js"></script>
-    <script>
-    var is_login, username, is_admin,save,userid;
-    is_login = false;
-    username = "";
-    userid = -1;
-    is_admin = false;
-    function load() {
-        $.get("/users/api_is_login.json",function (json,code) {
-            console.log("api_is_login");
-            console.log(json);
-            console.log(code);
-            if (json != null) {
-                $("th#nav1")[0].innerHTML = "<a href='/users/" + json.id + "/edit' target='_blank'>" + json.name + "</a>, welcome back! <a href='/users/login?user[name]=logout'>logout</a>"
-                username = json.name;
-                userid = json.id;
-                is_login = true;
-            } else {
-                var str;
-                str = "<form action='/users/login' method='POST'>name:<input type='text' name='user[name]' size=6/>password:<input type='password' name='user[password]' size=6/><input type='submit' value='login'>";
-                str += "or <a href='/users/new' target='_blank'>Register!</a></form>";
-                $("th#nav1")[0].innerHTML += str;
-                is_login = false;
-            }
-        });
-        $.get("/users/api_is_admin.json", function (json,code){
-            var l;
-            console.log("api_is_admin");
-            console.log(json);
-            console.log(code);
-            if (json) {
-                $("th#nav2")[0].innerHTML = "<a href='/users' target='_blank'>Manage Users</a>";
-            } else {
-                $("th#nav2")[0].innerHTML = "<a href='#' id='list_user_link'></a>";
-                l=$("a#list_user_link")[0];
-                l.innerHTML = "List users";
-                l.onclick = function () {;
-                    if (l.innerHTML == "List users") {
-                        $.get('/users/api_list.json', function (json,code) {
-                            var list, i;
-                            console.log("(users/)api_list");
-                            console.log(json);
-                            console.log(code);
-                            list = "";
-                            $("div#user_list")[0].innerHTML = "";
-                            l.innerHTML = "Hide user list";
-                            for (i = 0; i < json.length; i++) {
-                                list += json[i].name;
-                                if (json[i].id == userid) {
-                                    list += "&nbsp;<b>(you)</b>";
-                                }
-                                list += "</br>";
-                            }
-                            $("div#user_list")[0].innerHTML = list;
-                        });
-                    } else {
-                        l.innerHTML = "List users";
-                        $("div#user_list")[0].innerHTML = "";
-                    }
-                };
-            }
-        });
-        load_plist_by_filter("");
-    }
-    function load_plist_by_filter(filter) {
-        if (filter == null) {
-            filter ="";
-        }
-        $.get("/posts/api_list.json" + ((filter == "") ? "" : ("?" + filter)), function (json,code){
-            var tb,np,el, i,trs;
-            console.log("(posts/)api_list");
-            console.log(json);
-            console.log(code);
-            tb = $("table#plists").find("tbody")[0];
-            trs = $(tb).find("tr");
-            for (i = 1; i < trs.length; i++) {
-                trs[i].remove();
-            }
-            for (i = 0; i < json.length; i++) {
-                np = document.createElement("tr");
-                el = document.createElement("td");
-                el.innerHTML = "<a href='javascript:show(" + json[i].id + ")'>" + json[i].t + "</a>";
-                np.appendChild(el);
-                el = document.createElement("td");
-                el.innerHTML = json[i].u;
-                np.appendChild(el);
-                el = document.createElement("td");
-                el.innerHTML = json[i].r;
-                np.appendChild(el);
-                el = document.createElement("td");
-                el.innerHTML = json[i].v;
-                np.appendChild(el);
-                tb.appendChild(np);
-            }
-        });
-    }
-    $(document).ready(load);
-    function vote_href(uid,pobj) {
-        var str = "";
-        if (pobj.u.id == uid || uid == -1) { //is owner or not logged in
-            return pobj.v.length.toString();
-        }
-        str += "<div>" + pobj.v.length;
-        if ($.inArray(uid,pobj.v) > -1) {
-            str += "<a href='#' onclick='devote("+ pobj.id+",this);'>(-)";
-        } else {
-            str += "<a href='#' onclick='vote("+ pobj.id+",this);'>(+)";
-        }
-        str += "</a></div>";
-        return str;
-    }
-    function vote(pid,obj) {
-        $.get("/votes/api_add.json?id=" + pid,function(json,code) {
-            console.log("api_add");
-            console.log(json);
-            console.log(code);
-            if(json) {
-                var v;
-                v = Number(obj.parentNode.firstChild.data) + 1;
-                obj.parentNode.innerHTML = v.toString() + "<a href='#' onclick='devote(" + pid + ",this);'>(-)</a>";
-            }
-        });
-    }
-    function devote(pid,obj) {
-        $.get("/votes/api_delete.json?id=" + pid,function(json,code) {
-            console.log("api_delete");
-            console.log(json);
-            console.log(code);
-            if(json) {
-                var v;
-                v = Number(obj.parentNode.firstChild.data) - 1;
-                obj.parentNode.innerHTML = v.toString() + "<a href='#' onclick='vote(" + pid + ",this);'>(+)</a>";
-            }
-        });
-    }
-    function show(i) {
-        $.get("/posts/api_show.json?id="+i, function (json,code){
-            var j,tb;
-            console.log("(posts/)api_show");
-            console.log(json);
-            console.log(code);
-            $("tr.is_comment").remove();
-            $("th#ptitle")[0].innerHTML = json.t;
-            $("th#pauthor")[0].innerHTML = json.u.name;
-            $("th#pvotes")[0].innerHTML = vote_href(userid,json);
-            $("td#pcontent")[0].innerHTML = json.c;
-            tb = $("table#pmain")[0];
-            for (j = 0; j < json.comments.length; j++) {
-                var comment,nc,el;
-                comment = json.comments[j];
-                nc = document.createElement("tr");
-                el = document.createElement("td");
-                el.innerHTML = comment.u.name + "&nbsp;says:";
-                el.width = 80;
-                nc.appendChild(el);
-                /*el = document.createElement("td");
-                el.colspan = 2;
-                el.innerHTML = comment.c;*/
-                nc.appendChild($("<td colspan='2'>" + comment.c + "</td>")[0]);
-                el = document.createElement("td");
-                el.align = 'middle';
-                el.innerHTML = vote_href(userid,comment);
-                nc.appendChild(el);
-                $(nc).addClass("is_comment");
-                tb.appendChild(nc);
-            }
-        });
-    }
-    </script>
+    <script src="/ui.js"></script>
 </head>
 <body>
-<table cellspacing="0"><tr><th id="nav1" valign="top" align="left"></th><th id="nav2" valign="top" align="right"></th></tr><tr><td colspan="2"><hr>&nbsp;<hr></td></tr>
-    <tr>
-        <td valign="top"><table border="0" cellspacing="0" id="plists"><tbody>
-            <tr>
-                <th width="320">Posts</th>
-                <th width="50">Author</th>
-                <th width="50">Replies</th>
-                <th width="50">Votes</th>
-            </tr></tbody>
-        </table></td>
-        <td valign="top"><div id="user_list"></div><table width="320" border="0" cellspacing="0" id="pmain">
-            <tr>
-                <th id="ptitle" colspan="2"></th>
-                <th id="pauthor" width="50"></th>
-                <th id="pvotes" width="40"></th>
-            </tr>
-            <tr>
-                <td colspan="4" id="pcontent"></td>
-            </tr>
-        </table></td>
-    </tr>
-</table>
+    <table cellspacing="0">
+        <tr>
+            <th id="nav1" valign="top" align="left"></th>
+            <th id="nav2" valign="top" align="right"></th>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <hr>
+                &nbsp;
+                <hr>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" bgcolor="#FFFF99">
+                <table border="0" cellspacing="0" id="plists">
+                    <tbody>
+                        <tr>
+                            <th width="320">Posts</th>
+                            <th width="50">Author</th>
+                            <th width="50">Replies</th>
+                            <th width="50">Votes</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td valign="top" width="320" id="right_container" align="right">
+                <div id="user_list"></div>
+                <table width="320" border="0" cellspacing="0" id="pmain">
+                    <tr>
+                        <th id="ptitle" colspan="2"></th>
+                        <th id="pauthor" width="50"></th>
+                        <th id="pvotes" width="40"></th>
+                    </tr>
+                    <tr>
+                        <td colspan="4" id="pcontent"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>

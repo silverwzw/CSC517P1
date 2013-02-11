@@ -5,6 +5,7 @@ class CreatePosts < ActiveRecord::Migration
       t.string :content
       t.references :user
       t.references :post
+      t.references :category
       t.timestamps
     end
   end
