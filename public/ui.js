@@ -1,5 +1,29 @@
 var is_login, username, is_admin, userid, user_list_el, main_post_el, is_main_post_toggle, current_filter;
 var edit_lock;
+String.prototype.replaceAll = function (t, d) {
+    var i, str, arr;
+    if (typeof t === "string" && typeof d === "string" ) {
+        arr = this.split(t);
+        str = "";
+        for (i = 0; i < arr.length - 1; i++) {
+            str += arr[i] + d;
+        }
+        return str + arr[i];
+    } else if (typeof t === "object" && typeof t.length !== "undefined") {
+        var tmp;
+        tmp = this;
+        for (i = 0; i < t.length; i++) {
+            if (t[i].length == 2 && typeof t[i][0] === "string" && typeof t[i][1] === "string") {
+                tmp = tmp.replaceAll(t[i][0],t[i][1]);
+            }
+        }
+        return tmp;
+    }
+    return this;
+};
+String.prototype.URLsafe = function () {
+    return this.replaceAll([["%","%25"],["/","%2f"],["\\","%5c"],["&","%26"],["{","%7b"],["}","%7d"],[":","%3a"],["?","%3f"],["+","%3a"],[" ","%20"],[";","%3b"]]);
+};
 is_login = false;
 username = "";
 userid = -1;
@@ -182,6 +206,7 @@ function show(i) {
         console.log(json);
         toggle_container("POST");
         $("tr.is_comment").remove();
+        edit_lock = false;
         edit = (userid == json.u.id || is_admin) ? "<a href='/posts/" + json.id + "/edit'><img src='/edit.gif' alt='Edit this post'/></a> ":"";
         $("th#ptitle")[0].innerHTML = edit + del_href(json, json.id) + json.t;
         $("th#pauthor")[0].innerHTML = "By:<br/>" +json.u.name;
@@ -225,7 +250,7 @@ function reply(post_id) {
         alert("Reply cannot be empty!");
         return;
     }
-    $.get('/posts/api_reply.json?post_id=' + post_id + "&content="+content, function (json, code) {
+    $.get('/posts/api_reply.json?post_id=' + post_id + "&content="+content.URLsafe(), function (json, code) {
         console.log("api_reply");
         console.log(json);
         if (json) {
@@ -306,13 +331,12 @@ function del_post(id, obj) {
 function edit_reply(obj ,id, post_id) {
     var tds,el,old;
     if (edit_lock) {
-        alert("You cannot edit more than one reply simultaneously");
+        alert("You cannot edit two replies simultaneously");
         return;
     }
     edit_lock = true;
     tds = obj.parentNode.parentNode.children;
-    old = tds[1].childNodes[0].data;
-    old = old.substring(0, old.length-2);
+    old = tds[1].innerHTML.replaceAll("<br />","\n").replaceAll("<p />", "\r\n").replaceAll("&lt;","<").replaceAll("&gt;",">").replaceAll("&amp;","&");
     tds[1].innerHTML = "<input type='text' id='reply2'/>";
     $("input#reply2")[0].value = old;
     tds[2].innerHTML = "";
@@ -326,8 +350,8 @@ function edit_reply(obj ,id, post_id) {
             alert("Reply cannot be empty!");
             return;
         }
-        $.get("/posts/api_reply.json?id=" + id +"&content=" + content, function (json,code) {
-            console.log("api_reply?id=" + id +"&content=" + content);
+        $.get("/posts/api_reply.json?id="+id+"&content="+content.URLsafe(), function (json,code) {
+            console.log("(posts/)api_reply?id=" + id +"&content=" + content);
             console.log(json);
             alert("Your reply has been updated!");
             show(post_id);
