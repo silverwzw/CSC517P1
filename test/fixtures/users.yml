@@ -1,21 +1,25 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
 one:
+  id: 1
   name: Steven
   password: steven
   admin: 0
 
 two:
+  id: 2
   name: Eric
   password: eric
   admin: 0
 
 three:
+  id: 3
   name: Jessi
   password: jessi
   admin: 0
 
 four:
+  id: 4
   name: Admin
   password: admin
   admin: 1

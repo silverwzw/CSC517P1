@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   end
 
   def self.is_user?(session,username)
-    if !(is_login?(session))
+    unless is_login?(session)
       return false
     end
     return (User.find(session[:user_id]).name == username)

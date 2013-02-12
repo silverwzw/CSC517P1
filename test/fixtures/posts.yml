@@ -1,24 +1,28 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
 one:
+  id: 1
   title: Project Due
   content: Project will be due soon.
   user_id: 2
   category_id: 1
 
 two:
+  id: 2
   title: New Library
   content: James Hunt Library is now open to the public.
   user_id: 1
   category_id: 2
 
- three:
+three:
+  id: 3
   title: First exam
   content: The first exam was rather difficult.
   user_id: 1
   category_id: 2
 
-  four:
-    content: Agree
-    user_id: 1
-    post_id: 1
+four:
+  id: 4
+  content: Agree
+  user_id: 1
+  post_id: 1
