@@ -73,6 +73,7 @@ class UsersController < ApplicationController
       end
       return
     end
+    params[:user][:admin] = 0
     @user = User.new(params[:user])
 
     respond_to do |format|

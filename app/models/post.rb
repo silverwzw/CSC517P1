@@ -16,4 +16,11 @@ class Post < ActiveRecord::Base
     }
     @js_str += "]"
   end
+
+  def self.displayable(str)
+    if str == nil
+      return ""
+    end
+    return str.gsub("&","&amp;").gsub("<","&lt;").gsub(">","&gt;").gsub("\r\n","<p />").gsub("\n","<br />").gsub("\r","<br />")
+  end
 end
