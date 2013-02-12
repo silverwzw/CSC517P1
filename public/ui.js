@@ -112,7 +112,7 @@ function load_plist_by_filter(filter) {
         tb = $("table#plists").find("tbody")[0];
         trs = $(tb).find("tr");
         for (i = 1; i < trs.length; i++) {
-            trs[i].remove();
+            $(trs[i]).remove();
         }
         for (i = 0; i < json.length; i++) {
             np = document.createElement("tr");
