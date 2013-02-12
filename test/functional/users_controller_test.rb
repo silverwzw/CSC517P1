@@ -3,18 +3,18 @@ require File.dirname(__FILE__) + '/../test_helper'
 class UsersControllerTest < ActionController::TestCase
   test "should get index" do
     get :index
-    assert_response :success
+    assert_response(200)
     assert_not_nil assigns(:users)
   end
 
   test "should get new" do
     get :new
-    assert_response :success
+    assert_response(200)
   end
 
   test "should create user" do
     assert_difference('User.count') do
-      post :create, user: { :name => "New", :password => "new" }
+      post :create, user: { name: "New", password: "new" }
     end
 
     assert User.find_by_name("New")
@@ -23,13 +23,13 @@ class UsersControllerTest < ActionController::TestCase
   test "should show user" do
     session[:user_id] = 2
     get :show, id: 2
-    assert_response :success
+    assert_response(200)
   end
 
   test "should get edit" do
     session[:user_id] = 2
     get :edit, id: 2
-    assert_response :success
+    assert_response(200)
   end
 
   test "should update user" do
@@ -44,7 +44,7 @@ class UsersControllerTest < ActionController::TestCase
       delete :destroy, id: 2
     end
 
-    assert_redirected_to users_path
+    assert_redirected_to "/users"
   end
 
   test "should login" do
