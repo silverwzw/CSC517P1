@@ -96,10 +96,10 @@ class CategoriesController < ApplicationController
         return
       end
       o = Category.where("name = \"Other\"")[0];
-      @category.posts.each { |p|
-        p.category = o;
+      @category.posts.each do |p|
+        p.category = o
         p.save
-      }
+      end
 
 
       @category.destroy
