@@ -19,4 +19,9 @@ class PostTest < Test::Unit::TestCase
     json_string = Post.find(3).votes_json
     assert json_string == '[]'
   end
+
+  def test_displayable
+    str = "This & is < a > test \r\n of \n displayable. \r"
+    assert Post.displayable(str) == 'This &amp; is &lt; a &gt; test <p /> of <br /> displayable. <br />'
+  end
 end
