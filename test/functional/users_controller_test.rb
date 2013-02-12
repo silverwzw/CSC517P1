@@ -1,10 +1,6 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class UsersControllerTest < ActionController::TestCase
-  setup do
-    @user = users(:one)
-  end
-
   test "should get index" do
     get :index
     assert_response :success
@@ -18,32 +14,58 @@ class UsersControllerTest < ActionController::TestCase
 
   test "should create user" do
     assert_difference('User.count') do
-      post :create, user: { name: @user.name, password: @user.password }
+      post :create, user: { :name => "New", :password => "new" }
     end
 
-    assert_redirected_to user_path(assigns(:user))
+    assert User.find_by_name("New")
   end
 
   test "should show user" do
-    get :show, id: @user
+    session[:user_id] = 2
+    get :show, id: 2
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, id: @user
+    session[:user_id] = 2
+    get :edit, id: 2
     assert_response :success
   end
 
   test "should update user" do
-    put :update, id: @user, user: { name: @user.name, password: @user.password }
-    assert_redirected_to user_path(assigns(:user))
+    session[:user_id] = 2
+    put :update, id: 2, user: { name: "new", password: "eric" }
+    assert User.find_by_name("new")
   end
 
   test "should destroy user" do
+    session[:user_id] = 2
     assert_difference('User.count', -1) do
-      delete :destroy, id: @user
+      delete :destroy, id: 2
     end
 
     assert_redirected_to users_path
   end
+
+  test "should login" do
+    post :login, user: {name: "Eric", password: "eric"}
+    assert session[:user_id] = 2
+  end
+
+  test "should logout" do
+    post :login, user: {name: "logout"}
+    assert session[:user_id] = -1
+  end
+
+  test "should fail" do
+    post :login, user: {name: "Eric", password: "derp"}
+    assert session[:user_id] != 2
+  end
+
+  test "should list" do
+    @users = get :api_list
+    assert @users = User.all
+  end
+
+
 end
