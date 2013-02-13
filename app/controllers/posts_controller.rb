@@ -28,9 +28,9 @@ class PostsController < ApplicationController
   # POST /posts
   # POST /posts.json
   def create
-    if !User.is_login? session
+    unless User.is_login? session
       respond_to do |format|
-        format.html {redirect_to "/"}
+        format.html { redirect_to "/" }
       end
     end
     params[:post][:user] = User.find(session[:user_id])
@@ -51,7 +51,7 @@ class PostsController < ApplicationController
   def update
     @post = Post.find(params[:id])
 
-    if (User.is_admin? session || session[:user_id] == @post.user.id)
+    if User.is_admin? session || session[:user_id] == @post.user.id
       params[:post][:category] = Category.find(params[:post][:category])
       respond_to do |format|
         if @post.update_attributes(params[:post])
@@ -104,7 +104,7 @@ class PostsController < ApplicationController
       params[:keyword] = "%" + params[:keyword] + "%"
       condition += " AND content LIKE :keyword"
     end
-    @posts = Post.where(condition, params).order("updated_at DESC");
+    @posts = Post.where(condition, params).order("updated_at DESC")
   end
 
   def api_reply

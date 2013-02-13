@@ -5,12 +5,15 @@
 # below each fixture, per the syntax in the comments below
 #
 one:
+  id: 1
   name: Project
 # column: value
 #
 two:
+  id: 2
   name: Gossip
 
 three:
+  id: 3
   name: Other
 #  column: value

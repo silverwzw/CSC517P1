@@ -17,9 +17,9 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
-    if !(User.is_login?(session))
+    unless User.is_login?(session)
       respond_to do |format|
-        format.html {redirect_to "/msg.html?please_log_in_first"}
+        format.html { redirect_to "/msg.html?please_log_in_first" }
         format.json
       end
       return
@@ -52,20 +52,19 @@ class UsersController < ApplicationController
   # GET /users/1/edit
   def edit
     @user = User.find(params[:id])
-    if !(User.is_admin?(session) or User.is_user?(session,@user.name))
+    unless User.is_admin?(session) or User.is_user?(session, @user.name)
       respond_to do |format|
-        format.html {redirect_to "/msg.html?you_do_not_have_required_permission"}
+        format.html { redirect_to "/msg.html?you_do_not_have_required_permission" }
         format.json
       end
-      return
     end
   end
 
   # POST /users
   # POST /users.json
   def create
-    @username = params[:user][:name];
-    if (@username == "logout" || @username == "login" || User.where("name = ?", @username).count > 0)
+    @username = params[:user][:name]
+    if @username == "logout" || @username == "login" || User.where("name = ?", @username).count > 0
       session.clear
       respond_to do |format|
         format.html {redirect_to "/msg.html?This_username_is_not_available"}
@@ -92,9 +91,9 @@ class UsersController < ApplicationController
   # PUT /users/1.json
   def update
     @user = User.find(params[:id])
-    if !(User.is_admin?(session) or User.is_user?(session,@user.name))
+    unless User.is_admin?(session) or User.is_user?(session, @user.name)
       respond_to do |format|
-        format.html {redirect_to "/msg.html?you_do_not_have_required_permission"}
+        format.html { redirect_to "/msg.html?you_do_not_have_required_permission" }
         format.json
       end
       return
@@ -116,15 +115,15 @@ class UsersController < ApplicationController
   def destroy
     @user = User.find(params[:id])
     @is_ad = User.is_admin?(session)
-    if !(@is_ad or User.is_user?(session,@user.name))
+    unless @is_ad or User.is_user?(session, @user.name)
       respond_to do |format|
-        format.html {redirect_to "/msg.html?you_do_not_have_required_permission"}
+        format.html { redirect_to "/msg.html?you_do_not_have_required_permission" }
         format.json
       end
       return
     end
     @user.destroy
-    if (!@is_ad)
+    unless @is_ad
       session.clear
     end
 
@@ -138,7 +137,7 @@ class UsersController < ApplicationController
   # POST /users/login.json
   def login
     @result = false
-    if(params[:user][:name] == "logout")
+    if params[:user][:name] == "logout"
       session[:user_id] = -1
       respond_to do |format|
         format.html {redirect_to "/msg?bye!"}
@@ -147,7 +146,7 @@ class UsersController < ApplicationController
       return
     end
     @user = User.where("name = ?", params[:user][:name])
-    if (@user.count < 1)
+    if @user.count < 1
       respond_to do |format|
         format.html {redirect_to "/msg?no_such_user"}
         format.json
@@ -180,7 +179,7 @@ class UsersController < ApplicationController
 
   def api_is_login
     @is_in = User.is_login?(session)
-    if (@is_in)
+    if @is_in
       @user_id = session[:user_id].to_s
       @username = User.find(session[:user_id]).name
       @user_is_admin = User.find(session[:user_id]).admin != 0 ? "true" : "false"

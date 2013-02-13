@@ -1,49 +1,48 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class CategoriesControllerTest < ActionController::TestCase
-  setup do
-    @category = categories(:one)
-  end
 
   test "should get index" do
-    get :index
-    assert_response :success
-    assert_not_nil assigns(:categories)
+    session[:user_id] = 4
+    get(:index)
+    assert_response(200)
   end
 
   test "should get new" do
-    get :new
-    assert_response :success
+    session[:user_id] = 4
+    get(:new)
+    assert_response(200)
   end
 
   test "should create category" do
-    assert_difference('Category.count') do
-      post :create, category: { name: @category.name }
-    end
-
-    assert_redirected_to category_path(assigns(:category))
+    session[:user_id] = 4
+    get :create, category: {name: "Cool Stuff"}
+    assert_response(302)
   end
 
-  test "should show category" do
-    get :show, id: @category
-    assert_response :success
+  test "should show post" do
+    session[:user_id] = 4
+    get :show, id: 1
+    assert_response(200)
   end
 
   test "should get edit" do
-    get :edit, id: @category
-    assert_response :success
+    session[:user_id] = 4
+    get(:edit, :id => 1)
+    assert_response(200)
   end
 
   test "should update category" do
-    put :update, id: @category, category: { name: @category.name }
-    assert_redirected_to category_path(assigns(:category))
+    session[:user_id] = 4
+    put :update, id: 2, category: {name: "Random"}
+    assert Category.find_by_name("Random")
   end
 
   test "should destroy category" do
+    session[:user_id] = 4
     assert_difference('Category.count', -1) do
-      delete :destroy, id: @category
+      delete :destroy, id: 2
     end
 
-    assert_redirected_to categories_path
   end
 end

@@ -16,7 +16,7 @@ class VotesController < ApplicationController
 
   def api_delete
       @vote = Vote.where("user_id = ? AND post_id = ?", session[:user_id], params[:id])
-      if (@vote.count > 0)
+      if @vote.count > 0
         @vote[0].destroy
         @result = true
         return
@@ -25,11 +25,11 @@ class VotesController < ApplicationController
   end
 
   def vote_owner?(u, p)
-    return (Post.find(p).user_id == u)
+    (Post.find(p).user_id == u)
   end
 
   def has_voted?(u, p)
-    return (Vote.where("user_id = ? AND post_id = ?",u, p).count > 0)
+    (Vote.where("user_id = ? AND post_id = ?",u, p).count > 0)
   end
 
   private :has_voted?
