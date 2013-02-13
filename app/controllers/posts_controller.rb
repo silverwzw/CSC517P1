@@ -51,7 +51,7 @@ class PostsController < ApplicationController
   def update
     @post = Post.find(params[:id])
 
-    if User.is_admin? session || session[:user_id] == @post.user.id
+    if (User.is_admin? session) || (session[:user_id].to_s == @post.user.id.to_s)
       params[:post][:category] = Category.find(params[:post][:category])
       respond_to do |format|
         if @post.update_attributes(params[:post])
@@ -62,7 +62,7 @@ class PostsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html {redirect_to "/msg.html?You_cannot_edit_that_post"}
+        format.html {redirect_to ("/msg.html?You_cannot_edit_that_post")}
       end
     end
 

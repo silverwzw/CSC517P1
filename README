@@ -10,7 +10,7 @@ b. Test Framework :
 
 c. Starting URL for the application: 
 
-   http://127.0.0.1:3000
+   http://127.0.0.1:3000/index.html
 
 d. Commands to run to start the app:
 
