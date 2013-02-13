@@ -279,7 +279,7 @@ function toggle_container(s) {
         main_post_el.detach();
         $("a#list_user_link")[0].innerHTML = "Hide User List";
         $("td#right_container").append(user_list_el);
-        return
+        return;
     }
 }
 
