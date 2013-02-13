@@ -1,1 +1,17 @@
-This file was created by JetBrains RubyMine 4.5.4 for binding GitHub repository
+a. Team members:
+
+   Zhuowei Wang  Unity ID: zwang18
+   Eric Lumpkin  Unity ID: eblumpki
+   Chunxue Yang  Unity ID: cyang14
+
+b. Test Framework : 
+
+   Test::Unit framework
+
+c. Starting URL for the application: 
+
+   http://127.0.0.1:3000/index.html
+
+d. Commands to run to start the app:
+
+   rails server -b 127.0.0.1 -p 3000 -e development
