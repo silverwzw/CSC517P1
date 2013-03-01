@@ -102,7 +102,7 @@ class PostsController < ApplicationController
     end
     if params[:keyword] != nil
       params[:keyword] = "%" + params[:keyword] + "%"
-      condition += " AND content LIKE :keyword"
+      condition += " AND (content LIKE :keyword OR title LIKE :keyword) "
     end
     @posts = Post.where(condition, params).order("updated_at DESC")
   end
