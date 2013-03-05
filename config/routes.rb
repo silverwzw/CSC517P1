@@ -6,6 +6,7 @@ Project1::Application.routes.draw do
   match 'users/login' => 'users#login'
   match 'users/:id/toggle' => 'users#toggle'
   match 'posts/api_list' => 'posts#api_list'
+  match 'posts/api_list_voter' => 'posts#api_list_voter'
   match 'posts/api_reply' => 'posts#api_reply'
   match 'posts/api_show' => 'posts#api_show'
   match 'users/api_is_login' => 'users#api_is_login'

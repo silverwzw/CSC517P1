@@ -1,0 +1,5 @@
+[
+<% for i in (0...@voters.size) %>
+    "<%= @voters[i].user.name%>" <% if i != @voters.size-1 then%>,<% end %>
+<% end %>
+]

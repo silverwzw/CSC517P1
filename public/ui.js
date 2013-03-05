@@ -156,19 +156,33 @@ function load_plist_by_filter(filter) {
         }
     });
 }
+
+function show_voter_list(pid) {
+    $.get("/posts/api_list_voter.json?id=" + pid, function (json, code) {
+        console.log("api_list_voter");
+        console.log(json);
+        var str = "List of user who vote for this post/comment: \n\n", i;
+        for (i = 0; i < json.length; i++) {
+            str += json[i] + "\n";
+        }
+        alert(str);
+    });
+}
+
 function vote_href(uid,pobj) {
     var str = "";
-    if (pobj.u.id == uid || uid == -1) { //is owner or not logged in
-        return pobj.v.length.toString();
+    str += pobj.v.length;
+    if (pobj.u.id != uid && uid != -1) {
+        if ($.inArray(uid,pobj.v) > -1) {
+            str += "<a href='#' onclick='devote("+ pobj.id+",this);'>[-]</a>";
+        } else {
+            str += "<a href='#' onclick='vote("+ pobj.id+",this);'>[+]</a>";
+        }
     }
-    str += "<div>" + pobj.v.length;
-    if ($.inArray(uid,pobj.v) > -1) {
-        str += "<a href='#' onclick='devote("+ pobj.id+",this);'>[-]";
-    } else {
-        str += "<a href='#' onclick='vote("+ pobj.id+",this);'>[+]";
+    if (pobj.v.length > 0) {
+        str += "<a href='#' onclick='show_voter_list(" + pobj.id + ")'>[?]</a>";
     }
-    str += "</a></div>";
-    return str;
+    return  "<div>" +  str + "</div>";
 }
 
 function vote(pid,obj) {
@@ -178,7 +192,7 @@ function vote(pid,obj) {
         if(json) {
             var v;
             v = Number(obj.parentNode.firstChild.data) + 1;
-            obj.parentNode.innerHTML = v.toString() + "<a href='#' onclick='devote(" + pid + ",this);'>[-]</a>";
+            obj.parentNode.innerHTML = v.toString() + "<a href='#' onclick='devote(" + pid + ",this);'>[-]</a><a href='#' onclick='show_voter_list(" + pid + ")'>[?]</a>";
             alert("Successfully voted!");
             load_plist_by_filter(current_filter);
         }
@@ -190,9 +204,13 @@ function devote(pid,obj) {
         console.log("api_delete");
         console.log(json);
         if(json) {
-            var v;
+            var v,html_str;
             v = Number(obj.parentNode.firstChild.data) - 1;
-            obj.parentNode.innerHTML = v.toString() + "<a href='#' onclick='vote(" + pid + ",this);'>[+]</a>";
+            html_str = v.toString() + "<a href='#' onclick='vote(" + pid + ",this);'>[+]</a>";
+            if (v > 0) {
+                html_str += "<a href='#' onclick='show_voter_list(" + pid + ")'>[?]</a>";
+            }
+            obj.parentNode.innerHTML = html_str;
             alert("Successfully removed your vote!");
             load_plist_by_filter(current_filter);
         }
@@ -210,7 +228,7 @@ function show(i) {
         edit = (userid == json.u.id || is_admin) ? "<a href='/posts/" + json.id + "/edit'><img src='/edit.gif' alt='Edit this post'/></a> ":"";
         $("th#ptitle")[0].innerHTML = edit + del_href(json, json.id) + json.t;
         $("th#pauthor")[0].innerHTML = "By:<br/>" +json.u.name;
-        $("th#pvotes")[0].innerHTML = "Votes:<br/>" + vote_href(userid,json);
+        $("th#pvotes")[0].innerHTML = "Vote:<br/>" + vote_href(userid,json);
         $("td#pcontent")[0].innerHTML = json.c;
         tb = $("table#pmain")[0];
         for (j = 0; j < json.comments.length; j++) {
@@ -226,7 +244,7 @@ function show(i) {
             nc.appendChild($("<td colspan='2'>" + comment.c + "</td>")[0]);
             el = document.createElement("td");
             el.align = 'middle';
-            el.innerHTML = "Votes:<br>" + vote_href(userid,comment);
+            el.innerHTML = "Vote:<br>" + vote_href(userid,comment);
             nc.appendChild(el);
             $(nc).addClass("is_comment");
             tb.appendChild(nc);

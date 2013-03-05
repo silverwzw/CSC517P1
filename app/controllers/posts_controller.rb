@@ -10,6 +10,10 @@ class PostsController < ApplicationController
     @post = Post.find(params[:id])
   end
 
+  def api_list_voter
+    @voters = Post.find(params[:id]).votes
+  end
+
   # GET /posts/new
   # GET /posts/new.json
   def new
