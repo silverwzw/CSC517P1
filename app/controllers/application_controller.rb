@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
         2 => Post.new({:post => nil, :title => "New Library", :content => "James Hunt Library is now open to public.....It's fantastic, everyone should go and have a try.", :user => user_map[1], :category => category_map[2]}),
         3 => Post.new({:post => nil, :title => "1st Exam is hard", :content => "ATT", :user => user_map[1], :category => category_map[2]})
     }).each {|pst| pst[1].save}
-    Post.new({:post => post_map[1], :content => "Agree", :user => user_map[1]}).save()
+    Post.new({:post => post_map[1], :content => "Agree", :user => user_map[1], :title => "Re:Project Due"}).save()
     (vote_map = {
         1 => Vote.new({:user => user_map[1], :post => post_map[1]}),
         2 => Vote.new({:user => user_map[3], :post => post_map[2]}),

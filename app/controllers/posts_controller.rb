@@ -115,7 +115,7 @@ class PostsController < ApplicationController
     if User.is_login? session
       if params[:id] == nil
         post = Post.find(params[:post_id])
-        Post.new({:content => params[:content], :user => User.find(session[:user_id]), :post => post}).save
+        Post.new({:content => params[:content], :user => User.find(session[:user_id]), :post => post, :title => "Re:" + post.title}).save
         post.updated_at = Time.now
         post.save
       else
