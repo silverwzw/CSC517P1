@@ -1,5 +1,9 @@
 [
 <% for i in (0...@voters.size) %>
-    "<%= @voters[i].user.name%>" <% if i != @voters.size-1 then%>,<% end %>
+    <%if @voters[i].user == nil then%>
+        "DeletedUser"
+     <%else%>
+        "<%= @voters[i].user.name%>"
+     <%end%><% if i != @voters.size-1 then%>,<% end %>
 <% end %>
 ]

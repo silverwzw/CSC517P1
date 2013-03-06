@@ -9,7 +9,11 @@ class Post < ActiveRecord::Base
   def votes_json
     @js_str = "["
     (1..votes.size).each { |i|
-      @js_str += votes[i-1].user.id.to_s
+      if (votes[i-1].user == nil)
+        @js_str += "-2"
+      else
+        @js_str += votes[i-1].user.id.to_s
+      end
       if i != votes.size
         @js_str += ","
       end
