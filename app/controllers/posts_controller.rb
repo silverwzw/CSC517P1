@@ -114,7 +114,7 @@ class PostsController < ApplicationController
       if params[:id] == nil
         post = Post.find(params[:post_id])
         if (post.title == nil) then
-          post.title = "";
+          post.title = ""
         end
         Post.new({:content => params[:content], :user => User.find(session[:user_id]), :post => post, :title => "Re:" + post.title}).save
         post.updated_at = Time.now
