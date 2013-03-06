@@ -230,9 +230,14 @@ function show(i) {
         $("th#pauthor")[0].innerHTML = "By:<br/>" +json.u.name;
         $("th#pvotes")[0].innerHTML = "Vote:<br/>" + vote_href(userid,json);
         $("td#pcontent")[0].innerHTML = json.c;
+        if (json.parent >= 0) {
+            $("td#pparent")[0].innerHTML = "&gt;&gt;<a href='#' onclick='show(" + json.parent + ");'>back to parent post/comment</a>";
+        } else {
+            $("td#pparent")[0].innerHTML = "";
+        }
         tb = $("table#pmain")[0];
         for (j = 0; j < json.comments.length; j++) {
-            var comment,nc,el;
+            var comment,nc,el,str;
             comment = json.comments[j];
             tb.appendChild($("<tr class='is_comment'><td colspan='4'><hr></td></tr>")[0]);
             nc = document.createElement("tr");
@@ -248,6 +253,16 @@ function show(i) {
             nc.appendChild(el);
             $(nc).addClass("is_comment");
             tb.appendChild(nc);
+            if (userid > -1) {
+                str = "Add " + (comment.r>0?"/View ":"") + (comment.r>1?"replies":"reply") + " to this comment.";
+            } else if (comment.r>0) {
+                str = "View " + (comment.r>1?"replies":"reply") + " to this comment.";
+            } else {
+                str = "";
+            }
+            if (str.length > 0) {
+                tb.appendChild($("<tr class='is_comment'><td colspan='4'>&gt;&gt;<a href='#' onclick='show(" + comment.id + ");'>" + str + "</a></td></tr>")[0]);
+            }
         }
         if (is_login) {
             tb.appendChild($("<tr class='is_comment'><td colspan='4'><hr></td></tr>")[0]);
@@ -336,6 +351,7 @@ function del_post(id, obj) {
                 a[i].innerHTML = "";
             }
             $("td#pcontent")[0].innerHTML = "";
+            $("td#pparent")[0].innerHTML = "";
             alert("Successfully deleted the post!");
             load_plist_by_filter(current_filter);
         } else {

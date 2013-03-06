@@ -9,5 +9,6 @@
     <% for i in (1..@post.posts.size) %>
         {"id":<%=@post.posts[i-1].id%>,"u":{"id":<%=@post.posts[i-1].user.id%>,"name":"<%=@post.posts[i-1].user.name%>"},"c":"<%safe_concat(Post.displayable(@post.posts[i-1].content))%>","v":<%=@post.posts[i-1].votes_json%>,"r":<%=@post.posts[i-1].posts.count%>}<% if i!=@post.posts.size %>,<% end %>
     <% end %>
-    ]
+    ],
+"parent":<%if @post.post == nil then%>-1<%else%><%= @post.post.id.to_s %><%end%>
 }

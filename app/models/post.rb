@@ -23,4 +23,10 @@ class Post < ActiveRecord::Base
     end
     return str.gsub("&","&amp;").gsub("<","&lt;").gsub(">","&gt;").gsub("\r\n","<p />").gsub("\n","<br />").gsub("\r","<br />")
   end
+
+  def delete_recursive
+    posts.each {|c| c.delete_recursive}
+    votes.each {|v| v.destroy}
+    self.destroy
+  end
 end

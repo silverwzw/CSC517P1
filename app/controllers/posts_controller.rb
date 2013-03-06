@@ -81,9 +81,7 @@ class PostsController < ApplicationController
       @parent = post.post.id
     end
     if User.is_admin?(session) || User.is_user?(session, post.user.name)
-      post.votes.each {|v| v.destroy}
-      post.posts.each {|c| c.destroy}
-      post.destroy
+      post.delete_recursive
       @result = true
       return
     end
